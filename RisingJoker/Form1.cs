@@ -150,9 +150,28 @@ namespace RisingJoker
 
                     if ((string)x.Tag == "pBottom" || (string)x.Tag == "platform")
                     {
-                        x.Visible = true;
+                        //x.Visible = true;
                         x.BringToFront();
                         x.Top += platformVertSpeed;
+                    }
+
+                    if ((string)x.Tag == "coin")
+                    {
+                        x.Top += platformVertSpeed;
+                        if (player.Bounds.IntersectsWith(x.Bounds) && x.Visible)
+                        {
+                            x.Visible = false;
+                            x.Enabled = false;
+                            score += 50;
+                        }
+                    }
+                    if ((string)x.Tag == "enemy")
+                    {
+                        x.Top += platformVertSpeed;
+                        if (player.Bounds.IntersectsWith(x.Bounds))
+                        {
+                            score -= 5;
+                        }
                     }
                 }
             }
@@ -166,8 +185,13 @@ namespace RisingJoker
                 if (x.Name == "scoreBoard")
                 {
                     x.Visible = true;
+                    x.SendToBack();
                 }
-                if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
+                else if ((string)x.Tag == "platform")
+                {
+                    x.Visible = true;
+                }
+                else if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
                 {
                     x.Visible = false;
                     x.Enabled = false;
@@ -335,6 +359,32 @@ namespace RisingJoker
 
             ActiveForm.Controls.Add(newPlatform);
             ActiveForm.Controls.Add(newPbottom);
+
+            if (platformData.HasCoin) SpawnCoin(platformData);
+            if (platformData.HasEnemy) SpawnEnemy(platformData);
+        }
+
+        private void SpawnCoin(PlatformDto platformData)
+        {
+            PictureBox newCoin = new PictureBox();
+            newCoin.BackColor = Color.Yellow;
+            newCoin.Size = new Size(25, 25);
+            newCoin.Location = new Point(platformData.PositionX + platformData.CoinPosX, -25); //0, 0 - 500, 0
+            newCoin.Visible = true;
+            newCoin.Tag = "coin";
+
+            ActiveForm.Controls.Add(newCoin);
+        }
+        private void SpawnEnemy(PlatformDto platformData)
+        {
+            PictureBox newEnemy = new PictureBox();
+            newEnemy.BackColor = Color.Purple;
+            newEnemy.Size = new Size(25, 15);
+            newEnemy.Location = new Point(platformData.PositionX + platformData.EnemyPosX, -15); //0, 0 - 500, 0
+            newEnemy.Visible = true;
+            newEnemy.Tag = "enemy";
+
+            ActiveForm.Controls.Add(newEnemy);
         }
     }
 }
