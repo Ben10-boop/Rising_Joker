@@ -12,8 +12,7 @@ namespace RisingJokerServer
 {
     class Program
     {
-        public static bool redJoined, blueJoined, greenJoined, gameRunning;
-        public static int playersJoined = 0;
+        public static bool gameRunning;
 
         //handles players trying to join the game.
         public class JoinGame : WebSocketBehavior
@@ -23,14 +22,13 @@ namespace RisingJokerServer
             protected override void OnMessage(MessageEventArgs e)
             {
                 Console.WriteLine("-JoinGame- Received message from client: " + e.Data);
+                JoinManager joinManager = JoinManager.GetInstance();
                 switch (e.Data)
                 {
                     case "I want to be red":
-                        if (!redJoined)
+                        if (joinManager.AttemptJoinAsRed())
                         {
                             Console.WriteLine("-JoinGame- Player joined as Red");
-                            redJoined = true;
-                            playersJoined++;
                             Send("Ok you red");
                         }
                         else
@@ -40,11 +38,9 @@ namespace RisingJokerServer
                         }
                         break;
                     case "I want to be blue":
-                        if (!blueJoined)
+                        if (joinManager.AttemptJoinAsBlue())
                         {
                             Console.WriteLine("-JoinGame- Player joined as Blue");
-                            blueJoined = true;
-                            playersJoined++;
                             Send("Ok you blue");
                         }
                         else
@@ -54,11 +50,9 @@ namespace RisingJokerServer
                         }
                         break;
                     case "I want to be green":
-                        if (!greenJoined)
+                        if (joinManager.AttemptJoinAsGreen())
                         {
                             Console.WriteLine("-JoinGame- Player joined as Green");
-                            greenJoined = true;
-                            playersJoined++;
                             Send("Ok you green");
                         }
                         else
@@ -82,12 +76,13 @@ namespace RisingJokerServer
                 {
                     Send("Game has already started!");
                 }
-                else if (playersJoined < 1)
+                else if (JoinManager.GetInstance().GetPlayersJoined() < 1)
                 {
                     Send("Not enough players have joined yet");
                 }
                 else
                 {
+                    gameRunning = true;
                     DoGameRunning();
                 }
             }
