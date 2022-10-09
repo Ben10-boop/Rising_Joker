@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace RisingJokerServer.DTOs
+﻿namespace RisingJokerServer.DTOs
 {
     internal class PlatformDto
     {
@@ -17,7 +11,7 @@ namespace RisingJokerServer.DTOs
         public int EnemyPosX { get; set; } = 0;
         public override string ToString()
         {
-            return "W: " + Width + "; H: " + Height + "; X: " + PositionX;
+            return "W: " + Width + "; H: " + Height + "; X: " + PositionX + " Has Coin: " + HasCoin.ToString() + " Has Enemy: " + HasEnemy.ToString();
         }
     }
 }
