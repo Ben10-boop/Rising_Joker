@@ -5,9 +5,9 @@ namespace RisingJoker
     public class CoinFactory
     {
         private static int size = 25;
-        public static Coin CreateCoin(Point standingOn)
+        public static Coin CreateCoin(int xPosition)
         {
-            Point correctedPoint = new Point(standingOn.X, standingOn.Y - size);
+            Point correctedPoint = new Point(xPosition, -size);
             return new Coin(Color.Yellow, new Size(size, size), correctedPoint);
         }
     }

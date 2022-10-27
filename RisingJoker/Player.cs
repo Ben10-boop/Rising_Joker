@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace RisingJoker
 {
@@ -11,18 +10,23 @@ namespace RisingJoker
         const int JUMP_SPEED = -FALL_DOWN_SPEED - 20;
         private double jumpCooldown = 0;
         private bool isJumping, isMovingLeft, isMovingRight = false;
+        private bool hasLanded = true;
 
         public Player(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, TAG)
         {
-            this.LeftDirectionSpeed = -HORIZONTAL_SPEED;
-            this.RightDirectionSpeed = HORIZONTAL_SPEED;
-            this.UpDirectionSpeed = 0;
-            this.DownDirectionSpeed = FALL_DOWN_SPEED;
+            LeftDirectionSpeed = -HORIZONTAL_SPEED;
+            RightDirectionSpeed = HORIZONTAL_SPEED;
+            UpDirectionSpeed = 0;
+            DownDirectionSpeed = FALL_DOWN_SPEED;
+
         }
 
-        public override void OnCollision(GameObject other)
+        public override void OnCollisionWith(GameObject other)
         {
-            throw new NotImplementedException();
+            if (other.objectTag == "platform" && jumpCooldown <= 0)
+            {
+                hasLanded = true;
+            }
         }
 
         public override void Move()
@@ -71,9 +75,9 @@ namespace RisingJoker
             switch (direction)
             {
                 case MoveDirection.Up:
-                    return this.DownDirectionSpeed + this.UpDirectionSpeed;
+                    return DownDirectionSpeed + UpDirectionSpeed;
                 default:
-                    return this.DownDirectionSpeed;
+                    return DownDirectionSpeed;
             }
         }
 
@@ -101,24 +105,30 @@ namespace RisingJoker
         {
             if (jumpCooldown > 0)
             {
-                this.jumpCooldown -= 2.0 / 20;
-                this.ChangeColor(Color.IndianRed);
+                jumpCooldown -= 2.0 / 20;
+                ChangeColor(Color.IndianRed);
             }
-            if (this.UpDirectionSpeed < 0)
+            if (jumpCooldown < 0)
             {
-                this.UpDirectionSpeed -= JUMP_SPEED / 20;
+                jumpCooldown = 0;
             }
-            if (this.UpDirectionSpeed >= 0)
+            if (UpDirectionSpeed < 0)
             {
-                this.UpDirectionSpeed = 0;
+                UpDirectionSpeed -= JUMP_SPEED / 20;
             }
-            if (jumpCooldown <= 0 && this.UpDirectionSpeed == 0 && isJumping && IsCollidingWith(Platform.TAG))
+            if (UpDirectionSpeed > 0)
             {
-                this.jumpCooldown = 2.0;
-                this.UpDirectionSpeed = JUMP_SPEED;
+                UpDirectionSpeed = 0;
             }
+            if (jumpCooldown <= 0 && UpDirectionSpeed > -10 && isJumping && hasLanded)
+            {
+                ChangeColor(Color.Brown);
+                jumpCooldown = 2.0;
+                UpDirectionSpeed = JUMP_SPEED;
+                hasLanded = false;
+            }
+            MoveDirection verticalDirection = UpDirectionSpeed < 0 ? MoveDirection.Up : MoveDirection.Down;
 
-            MoveDirection verticalDirection = isJumping ? MoveDirection.Up : MoveDirection.Down;
             position = new Point(position.X, position.Y + GetVerticalSpeed(verticalDirection));
         }
     }

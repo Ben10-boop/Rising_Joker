@@ -27,6 +27,12 @@ namespace RisingJoker
             this.position = new Point(position.X + moveBy.X, position.Y + moveBy.Y);
         }
 
+        public virtual void MoveTo(Point moveTo)
+        {
+            this.position = new Point(moveTo.X, moveTo.Y);
+
+        }
+
         public virtual void MoveDisplayObject()
         {
             this.objectDisplay.Left = position.X;

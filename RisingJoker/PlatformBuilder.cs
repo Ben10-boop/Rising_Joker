@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Drawing;
+using System.Windows.Forms;
 
 namespace RisingJoker
 {
@@ -57,21 +59,22 @@ namespace RisingJoker
             return this;
         }
 
-
-
-        public PlatformBuilder AddCoin(int itemPositionX)
+        public PlatformBuilder AddCoin(Coin coin, Label form)
         {
-            Point coinPosition = GetItemPositionOnPlatform(itemPositionX);
-            Coin coin = CoinFactory.CreateCoin(coinPosition);
+            Point moveCoinTo = GetItemPositionOnPlatform(coin, form);
+            coin.MoveTo(moveCoinTo);
             this.objectsToAdd.Add(coin);
             ResetPlatform();
 
             return this;
         }
 
-        private Point GetItemPositionOnPlatform(int itemPositionX)
+        private Point GetItemPositionOnPlatform(GameObject other, Label form)
         {
-            return new Point(position.X + itemPositionX, position.Y);
+            int xPositionInBounds = Math.Max(Math.Min(position.X + other.position.X, position.X + size.Width - other.size.Width), position.X);
+
+            form.Text = string.Format("OTHER POSITION X: {0} \n position.X: {1} \n Min: {2}", position.X + other.position.X, position.X + size.Width - other.size.Width, Math.Min(position.X + other.position.X, position.X - size.Width));
+            return new Point(xPositionInBounds, this.position.Y - other.size.Height);
         }
 
         public Platform GetPlatform()
@@ -134,12 +137,13 @@ namespace RisingJoker
             return this;
         }
 
-        public PlatformBuilder AddEnemy(int itemPositionX)
+        public PlatformBuilder AddEnemy(Enemy enemy, Label form)
         {
-            ResetPlatform();
-            Point enemyPosition = GetItemPositionOnPlatform(itemPositionX);
-            Enemy enemy = EnemyFactory.CreateEnemy(enemyPosition);
+            Point moveTo = GetItemPositionOnPlatform(enemy, form);
+            enemy.MoveTo(moveTo);
             this.objectsToAdd.Add(enemy);
+            ResetPlatform();
+
             return this;
         }
     }

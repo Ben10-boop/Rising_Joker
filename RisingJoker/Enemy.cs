@@ -7,9 +7,8 @@ namespace RisingJoker
         public static string TAG = "enemy";
         public Enemy(Color color, Size size, Point position) : base(size, position, true, color, TAG) { }
 
-        public override void OnCollision(GameObject other)
+        public override void OnCollisionWith(GameObject other)
         {
-            throw new System.NotImplementedException();
         }
     }
 }
