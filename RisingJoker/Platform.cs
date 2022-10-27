@@ -15,9 +15,9 @@ namespace RisingJoker
             this.objects.Add(new PlatformBottom(new Size(size.Width - 40, 10), new Point(position.X + 20, 15), color));
         }
 
-        public override void OnCollision(GameObject other)
+        public override void OnCollisionWith(GameObject other)
         {
-            if (!(other is MovableObject))
+            if (!(other is MovableObject) || other.objectTag != "player")
             {
                 return;
             }
@@ -32,8 +32,8 @@ namespace RisingJoker
                 this.ChangeColor(Color.BlueViolet);
                 return;
             }
-
-            bool comingFromTop = objBounds.Bottom >= (platformBounds.Top - 3) && objBounds.Top < platformBounds.Top && objBounds.Bottom - (platformBounds.Top - 3) <= 10;
+            int threshold = 15;
+            bool comingFromTop = objBounds.Bottom >= (platformBounds.Top - 4) && objBounds.Top < platformBounds.Top && objBounds.Bottom - (platformBounds.Top - 4) <= threshold;
             if (comingFromTop)
             {
                 this.ChangeColor(Color.Red);

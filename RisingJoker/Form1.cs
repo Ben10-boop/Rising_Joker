@@ -28,6 +28,8 @@ namespace RisingJoker
             lobbySocket.Connect();
         }
 
+        bool addedOnce = false;
+
         bool needToStartGame, GameRunning, isWaitingForResponse;
         int score;
 
@@ -45,8 +47,7 @@ namespace RisingJoker
         //data objects that are received from server
         Stack<string> MenuMessages = new Stack<string>();
         PlatformDto platformToSpawnData;
-        List<MovableObject> movableGameObjects = new List<MovableObject>();
-        List<Platform> platformList = new List<Platform>();
+        List<GameObject> gameObjects = new List<GameObject>();
 
         /*
         Game timer event that happens every game frame. Everything that influences what is seen on
@@ -91,7 +92,6 @@ namespace RisingJoker
         {
             currentTime += 0.02;
             scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", score, currentTime);
-
             if (currentTime >= nextSpawnTime && platformToSpawnData != null)
             {
                 score += 10;
@@ -100,16 +100,32 @@ namespace RisingJoker
                 platformToSpawnData = null;
             }
 
-            movableGameObjects.ForEach(obj => obj.Move());
-            platformList.ForEach(obj =>
+            gameObjects.ForEach(obj =>
             {
-                if (obj.IsCollidingWith(userPlayer))
+                MovableObject movableObject = obj is MovableObject @object ? @object : null;
+                if (movableObject != null)
                 {
-                    obj.OnCollision(userPlayer);
+                    movableObject.Move();
+                }
+
+                gameObjects.ForEach(otherObj =>
+                {
+                    if (otherObj == obj)
+                    {
+                        return;
+                    }
+
+                    if (obj.IsCollidingWith(otherObj))
+                    {
+                        obj.OnCollisionWith(otherObj);
+                    }
+                });
+
+                if (movableObject != null)
+                {
+                    movableObject.MoveDisplayObject();
                 }
             });
-
-            movableGameObjects.ForEach(obj => obj.MoveDisplayObject());
         }
 
         private void StartGame()
@@ -223,13 +239,11 @@ namespace RisingJoker
             runSocket.Send("I want to start the game");
         }
 
-        //Key press event (what happens when a certain key is being held down)
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
             SetPlayerMovement(e, true);
         }
 
-        //Key release event (what happens when a certain key is not being pressed)
         private void KeyIsUp(object sender, KeyEventArgs e)
         {
             SetPlayerMovement(e, false);
@@ -275,12 +289,10 @@ namespace RisingJoker
             }
         }
 
-        //Method that's supposed to spawn the player when the game starts
-        //---! NEEDS FIXING !--- the method currently only makes already existing player object visible 
         private void SpawnPlayer()
         {
             userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
-            movableGameObjects.Add(userPlayer);
+            gameObjects.Add(userPlayer);
             userPlayer.Render();
         }
 
@@ -294,18 +306,21 @@ namespace RisingJoker
                 .SetSize(new Size(platformData.Width, platformData.Height))
                 .SetPosition(new Point(platformData.PositionX, yPosition))
                 .SetColor(Color.Brown);
-            if (platformData.HasCoin)
+            if (platformData.HasCoin && !addedOnce)
             {
-                platformBuilder.AddCoin(platformData.CoinPosX);
+                Coin coin = CoinFactory.CreateCoin(platformData.CoinPosX);
+                gameObjects.Add(coin);
+                platformBuilder.AddCoin(coin, consoleBoard);
             }
-            if (platformData.HasEnemy)
+            if (platformData.HasEnemy && !addedOnce)
             {
-                platformBuilder.AddEnemy(platformData.EnemyPosX);
+                Enemy enemy = EnemyFactory.CreateEnemy(platformData.EnemyPosX);
+                gameObjects.Add(enemy);
+                platformBuilder.AddEnemy(enemy, consoleBoard);
             }
 
             Platform platform = platformBuilder.GetPlatform();
-            movableGameObjects.Add(platform);
-            platformList.Add(platform);
+            gameObjects.Add(platform);
             platform.Render();
         }
 

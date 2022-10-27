@@ -13,7 +13,7 @@ namespace RisingJoker
         public Point position;
         protected bool isVisible;
         protected Color color;
-        protected string objectTag;
+        public string objectTag;
 
         public GameObject(Size size, Point position, bool isVisible, Color color, string objectTag)
         {
@@ -24,19 +24,7 @@ namespace RisingJoker
             this.objectTag = objectTag;
         }
 
-        public abstract void OnCollision(GameObject other);
-
-        public virtual bool IsCollidingWith(string tag)
-        {
-            foreach (Control c in this.GetGameScreen().Controls)
-            {
-                if (tag.Equals(c.Tag) && this.GetBounds().IntersectsWith(c.Bounds))
-                {
-                    return true;
-                }
-            }
-            return false;
-        }
+        public abstract void OnCollisionWith(GameObject other);
 
         public virtual bool IsCollidingWith(GameObject other)
         {

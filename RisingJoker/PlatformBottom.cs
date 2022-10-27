@@ -1,5 +1,4 @@
-﻿using System;
-using System.Drawing;
+﻿using System.Drawing;
 
 namespace RisingJoker
 {
@@ -8,9 +7,8 @@ namespace RisingJoker
         public static string TAG = "platformBottom";
         public PlatformBottom(Size size, Point position, Color color) : base(size, position, true, color, TAG) { }
 
-        public override void OnCollision(GameObject other)
+        public override void OnCollisionWith(GameObject other)
         {
-            throw new NotImplementedException();
         }
     }
 }
