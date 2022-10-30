@@ -52,6 +52,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DTOs\PlayerPositionDto.cs" />
+    <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="Enemy.cs" />
     <Compile Include="Coin.cs" />
     <Compile Include="DTOs\PlatformDto.cs" />
@@ -67,6 +69,13 @@
     <Compile Include="PlatformBottom.cs" />
     <Compile Include="PlatformBuilder.cs" />
     <Compile Include="Player.cs" />
+    <Compile Include="PlayerFactoryMethod\BluePlayer.cs" />
+    <Compile Include="PlayerFactoryMethod\BluePlayerCreator.cs" />
+    <Compile Include="PlayerFactoryMethod\GreenPlayer.cs" />
+    <Compile Include="PlayerFactoryMethod\GreenPlayerCreator.cs" />
+    <Compile Include="PlayerFactoryMethod\PlayerCreator.cs" />
+    <Compile Include="PlayerFactoryMethod\RedPlayer.cs" />
+    <Compile Include="PlayerFactoryMethod\RedPlayerCreator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="EnemyFactory.cs" />

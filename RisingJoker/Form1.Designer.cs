@@ -42,9 +42,9 @@
             // scoreBoard
             // 
             this.scoreBoard.Font = new System.Drawing.Font("Consolas", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scoreBoard.Location = new System.Drawing.Point(414, 7);
+            this.scoreBoard.Location = new System.Drawing.Point(965, 9);
             this.scoreBoard.Name = "scoreBoard";
-            this.scoreBoard.Size = new System.Drawing.Size(227, 65);
+            this.scoreBoard.Size = new System.Drawing.Size(255, 81);
             this.scoreBoard.TabIndex = 0;
             this.scoreBoard.Tag = "scoreText";
             this.scoreBoard.Text = "Time: 0";
@@ -61,9 +61,9 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Consolas", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(11, 90);
+            this.label1.Location = new System.Drawing.Point(12, 112);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(194, 32);
+            this.label1.Size = new System.Drawing.Size(233, 37);
             this.label1.TabIndex = 8;
             this.label1.Tag = "menuText";
             this.label1.Text = "Rising Joker";
@@ -72,10 +72,10 @@
             // 
             this.blueSelectButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.blueSelectButton.ForeColor = System.Drawing.Color.Blue;
-            this.blueSelectButton.Location = new System.Drawing.Point(17, 190);
+            this.blueSelectButton.Location = new System.Drawing.Point(19, 238);
             this.blueSelectButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.blueSelectButton.Name = "blueSelectButton";
-            this.blueSelectButton.Size = new System.Drawing.Size(201, 40);
+            this.blueSelectButton.Size = new System.Drawing.Size(226, 50);
             this.blueSelectButton.TabIndex = 9;
             this.blueSelectButton.TabStop = false;
             this.blueSelectButton.Tag = "menuButton";
@@ -87,10 +87,10 @@
             // 
             this.redSelectButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.redSelectButton.ForeColor = System.Drawing.Color.Red;
-            this.redSelectButton.Location = new System.Drawing.Point(17, 233);
+            this.redSelectButton.Location = new System.Drawing.Point(19, 291);
             this.redSelectButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.redSelectButton.Name = "redSelectButton";
-            this.redSelectButton.Size = new System.Drawing.Size(201, 40);
+            this.redSelectButton.Size = new System.Drawing.Size(226, 50);
             this.redSelectButton.TabIndex = 10;
             this.redSelectButton.TabStop = false;
             this.redSelectButton.Tag = "menuButton";
@@ -102,10 +102,10 @@
             // 
             this.greenSelectButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.greenSelectButton.ForeColor = System.Drawing.Color.Green;
-            this.greenSelectButton.Location = new System.Drawing.Point(17, 278);
+            this.greenSelectButton.Location = new System.Drawing.Point(19, 348);
             this.greenSelectButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.greenSelectButton.Name = "greenSelectButton";
-            this.greenSelectButton.Size = new System.Drawing.Size(201, 40);
+            this.greenSelectButton.Size = new System.Drawing.Size(226, 50);
             this.greenSelectButton.TabIndex = 11;
             this.greenSelectButton.TabStop = false;
             this.greenSelectButton.Tag = "menuButton";
@@ -116,9 +116,9 @@
             // consoleBoard
             // 
             this.consoleBoard.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.consoleBoard.Location = new System.Drawing.Point(247, 490);
+            this.consoleBoard.Location = new System.Drawing.Point(278, 612);
             this.consoleBoard.Name = "consoleBoard";
-            this.consoleBoard.Size = new System.Drawing.Size(836, 175);
+            this.consoleBoard.Size = new System.Drawing.Size(940, 219);
             this.consoleBoard.TabIndex = 12;
             this.consoleBoard.Tag = "menuText";
             this.consoleBoard.Text = "Time: 0";
@@ -128,10 +128,10 @@
             // 
             this.startButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startButton.ForeColor = System.Drawing.Color.Black;
-            this.startButton.Location = new System.Drawing.Point(17, 350);
+            this.startButton.Location = new System.Drawing.Point(19, 438);
             this.startButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.startButton.Name = "startButton";
-            this.startButton.Size = new System.Drawing.Size(201, 40);
+            this.startButton.Size = new System.Drawing.Size(226, 50);
             this.startButton.TabIndex = 13;
             this.startButton.TabStop = false;
             this.startButton.Tag = "menuButton";
@@ -141,10 +141,10 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 20F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
-            this.ClientSize = new System.Drawing.Size(1095, 674);
+            this.ClientSize = new System.Drawing.Size(1232, 842);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.consoleBoard);
             this.Controls.Add(this.greenSelectButton);

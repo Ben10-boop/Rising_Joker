@@ -1,4 +1,6 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+using RisingJokerServer.DTOs;
+using System;
 using WebSocketSharp;
 using WebSocketSharp.Server;
 
@@ -14,12 +16,15 @@ namespace RisingJokerServer
             Console.WriteLine("-JoinGame- Received message from client: " + e.Data);
             try
             {
-                string receivedPlayerColor = e.Data;
+                //string receivedPlayerColor = e.Data;
+                StringDto receivedPlayerColor = JsonConvert.DeserializeObject<StringDto>(e.Data);
 
-                PlayerColor color = (PlayerColor)Enum.Parse(typeof(PlayerColor), receivedPlayerColor);
+                PlayerColor color = (PlayerColor)Enum.Parse(typeof(PlayerColor), receivedPlayerColor.Value);
 
-                JoinManager.GetInstance().JoinAs(color);
-                Send($"Joined as {color}");
+                bool joinedSuccessfully = JoinManager.GetInstance().TryJoinAs(color);
+                if (joinedSuccessfully)
+                    Send(JsonConvert.SerializeObject(new StringDto { Value = $"Joined as {color}" }));
+                Send("Player already taken");
             }
             catch (Exception)
             {

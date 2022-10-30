@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using RisingJoker.DTOs;
+using RisingJoker.PlayerFactoryMethod;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -13,6 +14,7 @@ namespace RisingJoker
         Red = 0,
         Green = 1,
         Blue = 2,
+        None = 3
     }
 
     public partial class Form1 : Form
@@ -26,6 +28,9 @@ namespace RisingJoker
 
             lobbySocket.OnMessage += Ws_OnMessage;
             lobbySocket.Connect();
+
+            playerPosBroadcastSocket.OnMessage += PlayerPosBroadcastWs_OnMessage;
+            playerPosBroadcastSocket.Connect();
         }
 
         bool addedOnce = false;
@@ -33,21 +38,31 @@ namespace RisingJoker
         bool needToStartGame, GameRunning, isWaitingForResponse;
         int score;
 
+        List<GameObject> gameObjects = new List<GameObject>();
+
         //server stuff
         static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
+        readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
 
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
 
+        //to keep track of Players data
+        PlayerColor userColor = PlayerColor.None;
         Player userPlayer;
+        List<Player> opponents = new List<Player>();
 
         //data objects that are received from server
         Stack<string> MenuMessages = new Stack<string>();
         PlatformDto platformToSpawnData;
-        List<GameObject> gameObjects = new List<GameObject>();
+        PlayerPositionDto[] opponentPositions = new PlayerPositionDto[]
+        {
+            new PlayerPositionDto { PositionX = 0, PositionY = 0 },
+            new PlayerPositionDto { PositionX = 0, PositionY = 0 }
+        };
 
         /*
         Game timer event that happens every game frame. Everything that influences what is seen on
@@ -74,7 +89,7 @@ namespace RisingJoker
                 menuBoardText = menuBoardText + "\n" + message;
                 i++;
             }
-            //consoleBoard.Text = menuBoardText;
+            consoleBoard.Text = menuBoardText;
 
             foreach (Control x in this.Controls)
             {
@@ -99,7 +114,7 @@ namespace RisingJoker
                 SpawnPlatform(platformToSpawnData, 0);
                 platformToSpawnData = null;
             }
-
+            score += userPlayer.GetUniqueMechanicPoints(currentTime);
             gameObjects.ForEach(obj =>
             {
                 MovableObject movableObject = obj is MovableObject @object ? @object : null;
@@ -126,6 +141,13 @@ namespace RisingJoker
                     movableObject.MoveDisplayObject();
                 }
             });
+            UpdateOpponentsPositions();
+            playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
+            {
+                PlayerColor = userColor.ToString(),
+                PositionX = userPlayer.position.X,
+                PositionY = userPlayer.position.Y
+            }));
         }
 
         private void StartGame()
@@ -199,6 +221,12 @@ namespace RisingJoker
             GameRunning = true;
         }
 
+        private void UpdateOpponentsPositions()
+        {
+            opponents[0].position = new Point(opponentPositions[0].PositionX, opponentPositions[0].PositionY);
+            opponents[1].position = new Point(opponentPositions[1].PositionX, opponentPositions[1].PositionY);
+        }
+
         //Button clicking events (what happens when a certain button is clicked)
         private void OnRedSelectButtonClick(object sender, EventArgs e)
         {
@@ -222,9 +250,15 @@ namespace RisingJoker
                 return;
             }
 
+            if (userColor != PlayerColor.None)
+            {
+                MenuMessages.Push($"You have already chosen to play as {userColor}");
+                return;
+            }
+
             MenuMessages.Push($"Attempting to play as {color}");
 
-            lobbySocket.Send(color.ToString());
+            lobbySocket.Send(JsonConvert.SerializeObject(new StringDto { Value = color.ToString() }));
             isWaitingForResponse = true;
         }
 
@@ -235,8 +269,8 @@ namespace RisingJoker
             {
                 return;
             }
-
-            runSocket.Send("I want to start the game");
+            runSocket.Send(JsonConvert.SerializeObject(new StringDto { Value = "I want to start the game" }));
+            //runSocket.Send("I want to start the game");
         }
 
         private void KeyIsDown(object sender, KeyEventArgs e)
@@ -270,7 +304,23 @@ namespace RisingJoker
         //Message from JoinGame service
         private void Ws_OnMessage(object sender, MessageEventArgs e)
         {
-            MenuMessages.Push("Server: " + e.Data);
+            StringDto joinResult = JsonConvert.DeserializeObject<StringDto>(e.Data);
+            switch (joinResult.Value)
+            {
+                case "Joined as Blue":
+                    userColor = PlayerColor.Blue;
+                    break;
+                case "Joined as Red":
+                    userColor = PlayerColor.Red;
+                    break;
+                case "Joined as Green":
+                    userColor = PlayerColor.Green;
+                    break;
+                default:
+                    //Color was already taken
+                    break;
+            }
+            MenuMessages.Push("Server: " + joinResult.Value);
             isWaitingForResponse = false;
         }
         //Message from RunGame service
@@ -282,16 +332,65 @@ namespace RisingJoker
                 return;
             }
 
-            MenuMessages.Push("Server: " + e.Data);
-            if (e.Data == "Game Start!")
+            StringDto message = JsonConvert.DeserializeObject<StringDto>(e.Data);
+            MenuMessages.Push("Server: " + message.Value);
+            if (message.Value == "Game Start!")
             {
                 needToStartGame = true;
+            }
+        }
+        private void PlayerPosBroadcastWs_OnMessage(object sender, MessageEventArgs e)
+        {
+            PlayerPositionDto[] playersPositions = JsonConvert.DeserializeObject<PlayerPositionDto[]>(e.Data);
+            switch (userColor)
+            {
+                case PlayerColor.Red:
+                    opponentPositions[0] = playersPositions[1];
+                    opponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Green:
+                    opponentPositions[0] = playersPositions[0];
+                    opponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Blue:
+                    opponentPositions[0] = playersPositions[0];
+                    opponentPositions[1] = playersPositions[1];
+                    break;
             }
         }
 
         private void SpawnPlayer()
         {
-            userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
+            RedPlayerCreator redCreator = new RedPlayerCreator();
+            GreenPlayerCreator greenCreator = new GreenPlayerCreator();
+            BluePlayerCreator blueCreator = new BluePlayerCreator();
+            switch (userColor)
+            {
+                case PlayerColor.Red:
+                    userPlayer = redCreator.CreatePlayer();
+
+                    opponents.Add(greenCreator.CreatePlayer());
+                    opponents.Add(blueCreator.CreatePlayer());
+                    break;
+                case PlayerColor.Blue:
+                    userPlayer = blueCreator.CreatePlayer();
+
+                    opponents.Add(redCreator.CreatePlayer());
+                    opponents.Add(greenCreator.CreatePlayer());
+                    break;
+                case PlayerColor.Green:
+                    userPlayer = greenCreator.CreatePlayer();
+
+                    opponents.Add(redCreator.CreatePlayer());
+                    opponents.Add(blueCreator.CreatePlayer());
+                    break;
+                default:
+                    RedPlayerCreator spectatorCreator = new RedPlayerCreator();
+                    userPlayer = spectatorCreator.CreatePlayer();
+                    break;
+
+            }
+            //userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
             gameObjects.Add(userPlayer);
             userPlayer.Render();
         }

@@ -35,14 +35,19 @@ namespace RisingJokerServer
             return instance;
         }
 
-        public void JoinAs(PlayerColor color)
+        /// <summary>
+        /// Attempt to join the game as a specified player, returns true if joined successfuly
+        /// </summary>
+        /// <param name="color">Color of player to join as</param>
+        public bool TryJoinAs(PlayerColor color)
         {
             lock (joinThreadLock)
             {
                 if (colorsJoined.ContainsKey(color))
-                    return;
+                    return false;
 
                 colorsJoined[color] = true;
+                return true;
             }
         }
 

@@ -2,7 +2,7 @@
 
 namespace RisingJoker
 {
-    public class Player : MovableObject
+    public abstract class Player : MovableObject
     {
         public static string TAG = "player";
         const int HORIZONTAL_SPEED = 7;
@@ -18,7 +18,11 @@ namespace RisingJoker
             RightDirectionSpeed = HORIZONTAL_SPEED;
             UpDirectionSpeed = 0;
             DownDirectionSpeed = FALL_DOWN_SPEED;
+        }
 
+        public virtual int GetUniqueMechanicPoints(double currentGameTime)
+        {
+            return 0;
         }
 
         public override void OnCollisionWith(GameObject other)

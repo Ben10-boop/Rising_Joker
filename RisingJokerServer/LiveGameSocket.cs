@@ -13,17 +13,23 @@ namespace RisingJokerServer
     {
         private bool gameRunning = false;
 
+        //AMOUNT OF PLAYERS REQUIRED TO LAUNCH THE GAME
+        private int requiredPlayerCount = 1;
+
         //handles the messages of players trying to start the game
         protected override void OnMessage(MessageEventArgs e)
         {
-            Console.WriteLine("-RunGame- Received message from client: " + e.Data);
+            StringDto message = JsonConvert.DeserializeObject<StringDto>(e.Data);
+            Console.WriteLine("-RunGame- Received message from client: " + message.Value);
             if (gameRunning)
             {
-                Send("Game has already started!");
+                Send(JsonConvert.SerializeObject(new StringDto { Value = "Game has already started!" }));
+                //Send("Game has already started!");
             }
-            else if (JoinManager.GetInstance().GetPlayersJoined() < 1)
+            else if (JoinManager.GetInstance().GetPlayersJoined() < requiredPlayerCount)
             {
-                Send("Not enough players have joined yet");
+                Send(JsonConvert.SerializeObject(new StringDto { Value = "Not enough players have joined yet" }));
+                //Send("Not enough players have joined yet");
             }
             else
             {
@@ -35,13 +41,17 @@ namespace RisingJokerServer
         //handles the server side of running the game (tells what platforms to spawn)
         private async void DoGameRunning()
         {
-            Sessions.Broadcast("Starting in 3");
+            Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 3" }));
+            //Sessions.Broadcast("Starting in 3");
             await Task.Delay(1000);
-            Sessions.Broadcast("Starting in 2");
+            Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 2" }));
+            //Sessions.Broadcast("Starting in 2");
             await Task.Delay(1000);
-            Sessions.Broadcast("Starting in 1");
+            Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 1" }));
+            //Sessions.Broadcast("Starting in 1");
             await Task.Delay(1000);
-            Sessions.Broadcast("Game Start!");
+            Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Game Start!" }));
+            //Sessions.Broadcast("Game Start!");
 
             //level_1
             for (int i = 0; i < 50; i++)

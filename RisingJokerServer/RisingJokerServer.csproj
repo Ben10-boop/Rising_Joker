@@ -50,9 +50,12 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="DTOs\PlatformDto.cs" />
+    <Compile Include="DTOs\PlayerPositionDto.cs" />
+    <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="JoinManager.cs" />
     <Compile Include="LiveGameSocket.cs" />
     <Compile Include="LobbySocket.cs" />
+    <Compile Include="PlayerPositionBroadcastSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
