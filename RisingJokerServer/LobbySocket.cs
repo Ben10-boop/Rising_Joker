@@ -23,7 +23,10 @@ namespace RisingJokerServer
 
                 bool joinedSuccessfully = JoinManager.GetInstance().TryJoinAs(color);
                 if (joinedSuccessfully)
+                {
                     Send(JsonConvert.SerializeObject(new StringDto { Value = $"Joined as {color}" }));
+                    Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = $"{color} player joined the game" }));
+                }
                 Send("Player already taken");
             }
             catch (Exception)

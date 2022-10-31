@@ -17,14 +17,13 @@ namespace RisingJoker.PlayerFactoryMethod
             
         }
 
-        public override int GetUniqueMechanicPoints(double currentGameTime)
+        public override void UpdateUniqueMechanicPoints(double currentGameTime)
         {
             if(currentGameTime >= NextPointGainTime)
             {
                 NextPointGainTime += 1;
-                return 10;
+                ModifyScore(10);
             }
-            return 0;
         }
     }
 }

@@ -36,7 +36,6 @@ namespace RisingJoker
         bool addedOnce = false;
 
         bool needToStartGame, GameRunning, isWaitingForResponse;
-        int score;
 
         List<GameObject> gameObjects = new List<GameObject>();
 
@@ -106,15 +105,15 @@ namespace RisingJoker
         private void RunGame()
         {
             currentTime += 0.02;
-            scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", score, currentTime);
+            scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", userPlayer.GetScore(), currentTime);
             if (currentTime >= nextSpawnTime && platformToSpawnData != null)
             {
-                score += 10;
+                userPlayer.ModifyScore(10);
                 nextSpawnTime += 1;
                 SpawnPlatform(platformToSpawnData, 0);
                 platformToSpawnData = null;
             }
-            score += userPlayer.GetUniqueMechanicPoints(currentTime);
+            userPlayer.UpdateUniqueMechanicPoints(currentTime);
             gameObjects.ForEach(obj =>
             {
                 MovableObject movableObject = obj is MovableObject @object ? @object : null;

@@ -25,7 +25,7 @@ namespace RisingJoker.PlayerFactoryMethod
             }
         }
 
-        public override int GetUniqueMechanicPoints(double currentGameTime)
+        public override void UpdateUniqueMechanicPoints(double currentGameTime)
         {
             if (TouchingEnemy)
             {
@@ -33,10 +33,9 @@ namespace RisingJoker.PlayerFactoryMethod
                 if (currentGameTime >= NextPointGainTime)
                 {
                     NextPointGainTime = currentGameTime + 0.2;
-                    return 5;
+                    ModifyScore(12);
                 }
             }
-            return 0;
         }
     }
 }

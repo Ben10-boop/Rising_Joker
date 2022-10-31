@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using System.Collections.Generic;
+using System.Drawing;
 
 namespace RisingJoker
 {
@@ -11,6 +12,7 @@ namespace RisingJoker
         private double jumpCooldown = 0;
         private bool isJumping, isMovingLeft, isMovingRight = false;
         private bool hasLanded = true;
+        private int score = 0;
 
         public Player(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, TAG)
         {
@@ -20,9 +22,18 @@ namespace RisingJoker
             DownDirectionSpeed = FALL_DOWN_SPEED;
         }
 
-        public virtual int GetUniqueMechanicPoints(double currentGameTime)
+        public virtual void UpdateUniqueMechanicPoints(double currentGameTime)
         {
-            return 0;
+            
+        }
+
+        public int GetScore()
+        {
+            return score;
+        }
+        public void ModifyScore(int amount)
+        {
+            score += amount;
         }
 
         public override void OnCollisionWith(GameObject other)
@@ -30,6 +41,15 @@ namespace RisingJoker
             if (other.objectTag == "platform" && jumpCooldown <= 0)
             {
                 hasLanded = true;
+            }
+            if (other.objectTag == "enemy")
+            {
+                ModifyScore(-1);
+            }
+            if (other.objectTag == "coin")
+            {
+                //ModifyScore(50);
+                //Delete the coin and remove it from GameObject list. No clue.
             }
         }
 
