@@ -1,21 +1,23 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
+public enum PlayerColor
+{
+    Red = 0,
+    Green = 1,
+    Blue = 2,
+}
 
 namespace RisingJokerServer
 {
     public class JoinManager //Pattern: Singleton
     {
         private static JoinManager instance = null;
-        private bool redJoined, blueJoined, greenJoined;
-        private int playersJoined = 0;
+        private readonly Dictionary<PlayerColor, bool> colorsJoined = new Dictionary<PlayerColor, bool>();
 
         private static object threadLockInitialize = new object();
-        private object threadLockRed = new object();
-        private object threadLockBlue = new object();
-        private object threadLockGreen = new object();
+        private object joinThreadLock = new object();
+
         private JoinManager()
         {
             Console.WriteLine("-JoinGame- JoinManager initialised");
@@ -33,57 +35,25 @@ namespace RisingJokerServer
             return instance;
         }
 
-        public bool AttemptJoinAsRed()
+        /// <summary>
+        /// Attempt to join the game as a specified player, returns true if joined successfuly
+        /// </summary>
+        /// <param name="color">Color of player to join as</param>
+        public bool TryJoinAs(PlayerColor color)
         {
-            lock (threadLockRed)
+            lock (joinThreadLock)
             {
-                if (redJoined)
-                {
-                    return false; //you failed to join as red
-                }
-                else
-                {
-                    redJoined = true;
-                    playersJoined++;
-                    return true; //you successfully joined as red
-                }
-            }
-        }
-        public bool AttemptJoinAsBlue()
-        {
-            lock (threadLockBlue)
-            {
-                if (blueJoined)
-                {
+                if (colorsJoined.ContainsKey(color))
                     return false;
-                }
-                else
-                {
-                    blueJoined = true;
-                    playersJoined++;
-                    return true;
-                }
+
+                colorsJoined[color] = true;
+                return true;
             }
         }
-        public bool AttemptJoinAsGreen()
-        {
-            lock (threadLockGreen)
-            {
-                if (greenJoined)
-                {
-                    return false;
-                }
-                else
-                {
-                    greenJoined = true;
-                    playersJoined++;
-                    return true;
-                }
-            }
-        }
+
         public int GetPlayersJoined()
         {
-            return playersJoined;
+            return colorsJoined.Count;
         }
     }
 }

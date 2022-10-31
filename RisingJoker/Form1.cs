@@ -1,50 +1,67 @@
 ﻿using Newtonsoft.Json;
 using RisingJoker.DTOs;
+using RisingJoker.PlayerFactoryMethod;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using WebSocketSharp;
 
 namespace RisingJoker
 {
+    enum PlayerColor
+    {
+        Red = 0,
+        Green = 1,
+        Blue = 2,
+        None = 3
+    }
+
     public partial class Form1 : Form
     {
+        private const int FALL_SPEED = 2;
         public Form1()
         {
             InitializeComponent();
+            runSocket.OnMessage += RunWs_OnMessage;
+            runSocket.Connect();
+
+            lobbySocket.OnMessage += Ws_OnMessage;
+            lobbySocket.Connect();
+
+            playerPosBroadcastSocket.OnMessage += PlayerPosBroadcastWs_OnMessage;
+            playerPosBroadcastSocket.Connect();
         }
 
-        bool playerGoingLeft, playerGoingRight, playerJumping, needToStartGame, GameRunning, wait;
-        int score;
+        bool addedOnce = false;
+
+        bool needToStartGame, GameRunning, isWaitingForResponse;
+
+        List<GameObject> gameObjects = new List<GameObject>();
 
         //server stuff
-        static string serverAddress = "ws://127.0.0.1:6969";
-        WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
+        static readonly string serverAddress = "ws://127.0.0.1:6969";
+        readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
+        readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
+        readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
 
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
 
-        //jump stuff
-        int force;
-        double jumpCooldown;
-
-        //movement speeds
-        int playerVertSpeed;
-        int playerHorSpeed = 7;
-
-        int platformVertSpeed = 2;
-        int platformHorSpeed = 3;
+        //to keep track of Players data
+        PlayerColor userColor = PlayerColor.None;
+        Player userPlayer;
+        List<Player> opponents = new List<Player>();
 
         //data objects that are received from server
         Stack<string> MenuMessages = new Stack<string>();
-        PlatformDto platformToSpawnData = new PlatformDto();
+        PlatformDto platformToSpawnData;
+        PlayerPositionDto[] opponentPositions = new PlayerPositionDto[]
+        {
+            new PlayerPositionDto { PositionX = 0, PositionY = 0 },
+            new PlayerPositionDto { PositionX = 0, PositionY = 0 }
+        };
 
         /*
         Game timer event that happens every game frame. Everything that influences what is seen on
@@ -55,12 +72,11 @@ namespace RisingJoker
             if (GameRunning)
             {
                 RunGame();
+                return;
             }
-            else
-            {
-                ShowMenu();
-                if (needToStartGame) doGameStartSequence();
-            }
+
+            ShowMenu();
+            if (needToStartGame) StartGame();
         }
         private void ShowMenu()
         {
@@ -89,96 +105,54 @@ namespace RisingJoker
         private void RunGame()
         {
             currentTime += 0.02;
-            jumpCooldown -= 0.02;
-            scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", score, currentTime);
-            
-            if (currentTime >= nextSpawnTime)
+            scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", userPlayer.GetScore(), currentTime);
+            if (currentTime >= nextSpawnTime && platformToSpawnData != null)
             {
-                score += 10;
+                userPlayer.ModifyScore(10);
                 nextSpawnTime += 1;
-                SpawnPlatform(platformToSpawnData);
+                SpawnPlatform(platformToSpawnData, 0);
+                platformToSpawnData = null;
             }
-
-            player.Top += playerVertSpeed;
-
-            if (playerGoingLeft == true)
+            userPlayer.UpdateUniqueMechanicPoints(currentTime);
+            gameObjects.ForEach(obj =>
             {
-                player.Left -= playerHorSpeed;
-            }
-            if (playerGoingRight == true)
-            {
-                player.Left += playerHorSpeed;
-            }
-
-            if (playerJumping == true && force < 0)
-            {
-                playerJumping = false;
-                jumpCooldown = 0.6;
-            }
-            if (playerJumping == true && jumpCooldown < 0)
-            {
-                playerVertSpeed = -8;
-                force--;
-            }
-            else
-            {
-                playerVertSpeed = 5;
-            }
-
-            foreach (Control x in this.Controls)
-            {
-                if (x is PictureBox)
+                MovableObject movableObject = obj is MovableObject @object ? @object : null;
+                if (movableObject != null)
                 {
-                    if ((string)x.Tag == "pBottom")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                        {
-                            force = -1;
-                            jumpCooldown = 0.4;
-                            player.Top = x.Top + x.Height + 2;
-                            score -= 50;
-                        }
-                    }
-                    else if ((string)x.Tag == "platform")
-                    {
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                        {
-                            force = 8;
-                            player.Top = x.Top - player.Height;
-                        }
-                    }
-
-                    if ((string)x.Tag == "pBottom" || (string)x.Tag == "platform")
-                    {
-                        //x.Visible = true;
-                        x.BringToFront();
-                        x.Top += platformVertSpeed;
-                    }
-
-                    if ((string)x.Tag == "coin")
-                    {
-                        x.Top += platformVertSpeed;
-                        if (player.Bounds.IntersectsWith(x.Bounds) && x.Visible)
-                        {
-                            x.Visible = false;
-                            x.Enabled = false;
-                            score += 50;
-                        }
-                    }
-                    if ((string)x.Tag == "enemy")
-                    {
-                        x.Top += platformVertSpeed;
-                        if (player.Bounds.IntersectsWith(x.Bounds))
-                        {
-                            score -= 5;
-                        }
-                    }
+                    movableObject.Move();
                 }
-            }
+
+                gameObjects.ForEach(otherObj =>
+                {
+                    if (otherObj == obj)
+                    {
+                        return;
+                    }
+
+                    if (obj.IsCollidingWith(otherObj))
+                    {
+                        obj.OnCollisionWith(otherObj);
+                    }
+                });
+
+                if (movableObject != null)
+                {
+                    movableObject.MoveDisplayObject();
+                }
+            });
+            UpdateOpponentsPositions();
+            playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
+            {
+                PlayerColor = userColor.ToString(),
+                PositionX = userPlayer.position.X,
+                PositionY = userPlayer.position.Y
+            }));
         }
 
-        private void doGameStartSequence()
+        private void StartGame()
         {
+            GameObject.SetGameScreen(ActiveForm);
+
             SpawnPlayer();
             foreach (Control x in this.Controls)
             {
@@ -187,204 +161,266 @@ namespace RisingJoker
                     x.Visible = true;
                     x.SendToBack();
                 }
-                else if ((string)x.Tag == "platform")
-                {
-                    x.Visible = true;
-                }
-                else if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
+                //else if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
+                else if ((string)x.Tag == "menuButton")
                 {
                     x.Visible = false;
                     x.Enabled = false;
                 }
             }
+            List<PlatformDto> platforms = new List<PlatformDto>() { new PlatformDto
+            {
+                CoinPosX = 0,
+                HasCoin = false,
+                HasEnemy = false,
+                Height = 20,
+                Width = 450,
+                PositionX = 25,
+                EnemyPosX = 0,
+            },new PlatformDto
+            {
+                CoinPosX = 0,
+                HasCoin = false,
+                HasEnemy = false,
+                Height = 20,
+                Width = 400,
+                PositionX = 50,
+                EnemyPosX = 0,
+            },
+            new PlatformDto
+            {
+                CoinPosX = 0,
+                HasCoin = false,
+                HasEnemy = false,
+                Height = 20,
+                Width = 350,
+                PositionX = 75,
+                EnemyPosX = 0,
+            },
+            new PlatformDto
+            {
+                CoinPosX = 0,
+                HasCoin = false,
+                HasEnemy = false,
+                Height = 20,
+                Width = 300,
+                PositionX = 25,
+                EnemyPosX = 0,
+            }
+            };
+
+            platforms.ForEach(platform =>
+            {
+                int index = platforms.IndexOf(platform);
+                int yPos = 400 - (index * 100);
+                SpawnPlatform(platform, yPos);
+            });
+
+
             GameRunning = true;
         }
 
+        private void UpdateOpponentsPositions()
+        {
+            opponents[0].position = new Point(opponentPositions[0].PositionX, opponentPositions[0].PositionY);
+            opponents[1].position = new Point(opponentPositions[1].PositionX, opponentPositions[1].PositionY);
+        }
+
         //Button clicking events (what happens when a certain button is clicked)
-        private void redSelectButton_Click(object sender, EventArgs e)
+        private void OnRedSelectButtonClick(object sender, EventArgs e)
         {
-            MenuMessages.Push("Attempting to play as red");
-            using (WebSocket ws = new WebSocket(serverAddress + "/JoinGame"))
+            OnColorSelectClick(PlayerColor.Red);
+        }
+
+        private void OnGreenSelectButtonClick(object sender, EventArgs e)
+        {
+            OnColorSelectClick(PlayerColor.Green);
+
+        }
+        private void OnBlueSelectButtonClick(object sender, EventArgs e)
+        {
+            OnColorSelectClick(PlayerColor.Blue);
+        }
+
+        private void OnColorSelectClick(PlayerColor color)
+        {
+            if (isWaitingForResponse)
             {
-                ws.OnMessage += Ws_OnMessage;
-
-                ws.Connect();
-                ws.Send("I want to be red");
-
-                wait = true;
-                while (wait)
-                {
-                    // =D
-                }
+                return;
             }
-        }
 
-        private void greenSelectButton_Click(object sender, EventArgs e)
-        {
-            MenuMessages.Push("Attempting to play as green");
-            using (WebSocket ws = new WebSocket(serverAddress + "/JoinGame"))
+            if (userColor != PlayerColor.None)
             {
-                ws.OnMessage += Ws_OnMessage;
-
-                ws.Connect();
-                ws.Send("I want to be green");
-
-                wait = true;
-                while (wait)
-                {
-
-                }
+                MenuMessages.Push($"You have already chosen to play as {userColor}");
+                return;
             }
+
+            MenuMessages.Push($"Attempting to play as {color}");
+
+            lobbySocket.Send(JsonConvert.SerializeObject(new StringDto { Value = color.ToString() }));
+            isWaitingForResponse = true;
         }
-        private void blueSelectButton_Click(object sender, EventArgs e)
+
+
+        private void OnStartClick(object sender, EventArgs e)
         {
-            MenuMessages.Push("Attempting to play as blue");
-            using (WebSocket ws = new WebSocket(serverAddress + "/JoinGame"))
+            if (isWaitingForResponse)
             {
-                ws.OnMessage += Ws_OnMessage;
-
-                ws.Connect();
-                ws.Send("I want to be blue");
-
-                wait = true;
-                while (wait)
-                {
-                    
-                }
+                return;
             }
-        }
-        private void startButton_Click(object sender, EventArgs e)
-        {
-            runSocket.OnMessage += RunWs_OnMessage;
-            runSocket.Connect();
-            runSocket.Send("I want to start the game");
+            runSocket.Send(JsonConvert.SerializeObject(new StringDto { Value = "I want to start the game" }));
+            //runSocket.Send("I want to start the game");
         }
 
-        //Key press event (what happens when a certain key is being held down)
         private void KeyIsDown(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.Left)
-            {
-                playerGoingLeft = true;
-            }
-            if (e.KeyCode == Keys.Right)
-            {
-                playerGoingRight = true;
-            }
-            if (e.KeyCode == Keys.Space)
-            {
-                playerJumping = true;
-            }
-
+            SetPlayerMovement(e, true);
         }
 
-        //Key release event (what happens when a certain key is not being pressed)
         private void KeyIsUp(object sender, KeyEventArgs e)
+        {
+            SetPlayerMovement(e, false);
+        }
+
+        private void SetPlayerMovement(KeyEventArgs e, bool isMoving)
         {
             if (e.KeyCode == Keys.Left)
             {
-                playerGoingLeft = false;
+                userPlayer.SetMovement(MoveDirection.Left, isMoving);
             }
             if (e.KeyCode == Keys.Right)
             {
-                playerGoingRight = false;
+                userPlayer.SetMovement(MoveDirection.Right, isMoving);
             }
             if (e.KeyCode == Keys.Space)
             {
-                playerJumping = false;
+                userPlayer.SetMovement(MoveDirection.Up, isMoving);
             }
-
-
         }
+
 
         //Methods that are executed when a message is received from the server
         //Message from JoinGame service
         private void Ws_OnMessage(object sender, MessageEventArgs e)
         {
-            MenuMessages.Push("Server: " + e.Data);
-            wait = false;
+            StringDto joinResult = JsonConvert.DeserializeObject<StringDto>(e.Data);
+            switch (joinResult.Value)
+            {
+                case "Joined as Blue":
+                    userColor = PlayerColor.Blue;
+                    break;
+                case "Joined as Red":
+                    userColor = PlayerColor.Red;
+                    break;
+                case "Joined as Green":
+                    userColor = PlayerColor.Green;
+                    break;
+                default:
+                    //Color was already taken
+                    break;
+            }
+            MenuMessages.Push("Server: " + joinResult.Value);
+            isWaitingForResponse = false;
         }
         //Message from RunGame service
         private void RunWs_OnMessage(object sender, MessageEventArgs e)
         {
-            if (!GameRunning)
-            {
-                MenuMessages.Push("Server: " + e.Data);
-                if(e.Data == "Game Start!")
-                {
-                    needToStartGame = true;
-                }
-            }
-            else
+            if (GameRunning)
             {
                 platformToSpawnData = JsonConvert.DeserializeObject<PlatformDto>(e.Data);
+                return;
+            }
+
+            StringDto message = JsonConvert.DeserializeObject<StringDto>(e.Data);
+            MenuMessages.Push("Server: " + message.Value);
+            if (message.Value == "Game Start!")
+            {
+                needToStartGame = true;
+            }
+        }
+        private void PlayerPosBroadcastWs_OnMessage(object sender, MessageEventArgs e)
+        {
+            PlayerPositionDto[] playersPositions = JsonConvert.DeserializeObject<PlayerPositionDto[]>(e.Data);
+            switch (userColor)
+            {
+                case PlayerColor.Red:
+                    opponentPositions[0] = playersPositions[1];
+                    opponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Green:
+                    opponentPositions[0] = playersPositions[0];
+                    opponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Blue:
+                    opponentPositions[0] = playersPositions[0];
+                    opponentPositions[1] = playersPositions[1];
+                    break;
             }
         }
 
-        //Method that's supposed to spawn the player when the game starts
-        //---! NEEDS FIXING !--- the method currently only makes already existing player object visible 
         private void SpawnPlayer()
         {
-            foreach(Control x in this.Controls)
+            RedPlayerCreator redCreator = new RedPlayerCreator();
+            GreenPlayerCreator greenCreator = new GreenPlayerCreator();
+            BluePlayerCreator blueCreator = new BluePlayerCreator();
+            switch (userColor)
             {
-                if(x is PictureBox && (string)x.Tag == "player")
-                {
-                    x.Visible = true;
-                }
+                case PlayerColor.Red:
+                    userPlayer = redCreator.CreatePlayer();
+
+                    opponents.Add(greenCreator.CreatePlayer());
+                    opponents.Add(blueCreator.CreatePlayer());
+                    break;
+                case PlayerColor.Blue:
+                    userPlayer = blueCreator.CreatePlayer();
+
+                    opponents.Add(redCreator.CreatePlayer());
+                    opponents.Add(greenCreator.CreatePlayer());
+                    break;
+                case PlayerColor.Green:
+                    userPlayer = greenCreator.CreatePlayer();
+
+                    opponents.Add(redCreator.CreatePlayer());
+                    opponents.Add(blueCreator.CreatePlayer());
+                    break;
+                default:
+                    RedPlayerCreator spectatorCreator = new RedPlayerCreator();
+                    userPlayer = spectatorCreator.CreatePlayer();
+                    break;
+
             }
+            //userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
+            gameObjects.Add(userPlayer);
+            userPlayer.Render();
         }
 
         //Method that spawns a platform with specified parameters (received from server)
-        private void SpawnPlatform(PlatformDto platformData)
+
+        private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
-            /*
-            var rand = new Random();
-            int platformSize = rand.Next(200, 300);
-            int platformPosition = rand.Next(0, 500 - platformSize);*/
+            PlatformBuilder platformBuilder =
+                new PlatformBuilder()
+                .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
+                .SetSize(new Size(platformData.Width, platformData.Height))
+                .SetPosition(new Point(platformData.PositionX, yPosition))
+                .SetColor(Color.Brown);
+            if (platformData.HasCoin && !addedOnce)
+            {
+                Coin coin = CoinFactory.CreateCoin(platformData.CoinPosX);
+                gameObjects.Add(coin);
+                platformBuilder.AddCoin(coin, consoleBoard);
+            }
+            if (platformData.HasEnemy && !addedOnce)
+            {
+                Enemy enemy = EnemyFactory.CreateEnemy(platformData.EnemyPosX);
+                gameObjects.Add(enemy);
+                platformBuilder.AddEnemy(enemy, consoleBoard);
+            }
 
-            PictureBox newPlatform = new PictureBox();
-            newPlatform.BackColor = Color.Brown;
-            newPlatform.Size = new Size(platformData.Width, platformData.Height);
-            newPlatform.Location = new Point(platformData.PositionX, 0); //0, 0 - 500, 0
-            newPlatform.Visible = true;
-            newPlatform.Tag = "platform";
-
-            PictureBox newPbottom = new PictureBox();
-            newPbottom.BackColor = Color.Brown;
-            newPbottom.Size = new Size(platformData.Width - 40, 10);
-            newPbottom.Location = new Point(platformData.PositionX + 20, 15);
-            newPbottom.Visible = true;
-            newPbottom.Tag = "pBottom";
-
-
-            ActiveForm.Controls.Add(newPlatform);
-            ActiveForm.Controls.Add(newPbottom);
-
-            if (platformData.HasCoin) SpawnCoin(platformData);
-            if (platformData.HasEnemy) SpawnEnemy(platformData);
+            Platform platform = platformBuilder.GetPlatform();
+            gameObjects.Add(platform);
+            platform.Render();
         }
 
-        private void SpawnCoin(PlatformDto platformData)
-        {
-            PictureBox newCoin = new PictureBox();
-            newCoin.BackColor = Color.Yellow;
-            newCoin.Size = new Size(25, 25);
-            newCoin.Location = new Point(platformData.PositionX + platformData.CoinPosX, -25); //0, 0 - 500, 0
-            newCoin.Visible = true;
-            newCoin.Tag = "coin";
-
-            ActiveForm.Controls.Add(newCoin);
-        }
-        private void SpawnEnemy(PlatformDto platformData)
-        {
-            PictureBox newEnemy = new PictureBox();
-            newEnemy.BackColor = Color.Purple;
-            newEnemy.Size = new Size(25, 15);
-            newEnemy.Location = new Point(platformData.PositionX + platformData.EnemyPosX, -15); //0, 0 - 500, 0
-            newEnemy.Visible = true;
-            newEnemy.Tag = "enemy";
-
-            ActiveForm.Controls.Add(newEnemy);
-        }
     }
 }

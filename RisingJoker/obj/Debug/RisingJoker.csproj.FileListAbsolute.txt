@@ -28,3 +28,18 @@ C:\Users\Benas B\Documents\Code\VS 2022\Rising_Joker\RisingJoker\obj\Debug\Risin
 C:\Users\Benas B\Documents\Code\VS 2022\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.CopyComplete
 C:\Users\Benas B\Documents\Code\VS 2022\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.exe
 C:\Users\Benas B\Documents\Code\VS 2022\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.pdb
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.AssemblyReference.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.SuggestedBindingRedirects.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.Form1.resources
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.Properties.Resources.resources
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.GenerateResource.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.CoreCompileInputs.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.pdb
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\RisingJoker.exe.config
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\RisingJoker.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\RisingJoker.pdb
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\Newtonsoft.Json.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\websocket-sharp.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\Newtonsoft.Json.xml
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.CopyComplete
