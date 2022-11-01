@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 
 namespace RisingJoker.PlatformFactory
 {
-    internal interface IPlatFactory
+    public interface ICloneable<T>
     {
-        Coin CreateCoin();
-        Enemy CreateEnemy();
-        PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX);
+        T Clone();
     }
 }
