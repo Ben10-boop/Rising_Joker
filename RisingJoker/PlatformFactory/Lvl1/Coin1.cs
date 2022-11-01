@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RisingJoker.PlatformFactory.Lvl2
+namespace RisingJoker.PlatformFactory.Lvl1
 {
-    public class Coin2 : Coin
+    internal class Coin1 : Coin
     {
-        private readonly int Value = 75;
-        public Coin2(Color color, Size size, Point position) : base(color, size, position) { }
+        private readonly int Value = 50;
+        public Coin1(Color color, Size size, Point position) : base(color, size, position) { }
 
         public override void OnCollisionWith(GameObject other)
         {

@@ -17,18 +17,18 @@ namespace RisingJoker.PlatformFactory.Lvl1
         public Coin CreateCoin(int xPosition)
         {
             Point correctedPoint = new Point(xPosition, -coinSize);
-            return new Coin(Color.Yellow, new Size(coinSize, coinSize), correctedPoint);
+            return new Coin1(Color.Yellow, new Size(coinSize, coinSize), correctedPoint);
         }
         public Enemy CreateEnemy(int xPosition)
         {
             Point correctedPoint = new Point(xPosition, -enemyHeight);
-            return new Enemy(Color.Purple, new Size(enemyWidth, enemyHeight), correctedPoint);
+            return new Enemy1(Color.Purple, new Size(enemyWidth, enemyHeight), correctedPoint);
         }
 
         public PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX)
         {
             Point correctedPoint = new Point(platformPosX + 20, 15);
-            return new PlatformBottom(new Size(platformWidth - 40, 10), correctedPoint, Color.Brown);
+            return new PlatformBottom1(new Size(platformWidth - 40, 10), correctedPoint, Color.Brown);
         }
     }
 }

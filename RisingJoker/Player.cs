@@ -45,18 +45,18 @@ namespace RisingJoker
             }
             if (other.objectTag == "enemy")
             {
-                IEnemy enemy = (IEnemy)other;
+                Enemy enemy = (Enemy)other;
                 ModifyScore(enemy.GetContactPenalty());
             }
             if (other.objectTag == "coin")
             {
-                ICoin coin = (ICoin)other;
+                Coin coin = (Coin)other;
                 //ModifyScore(coin.GetValue());
                 //Delete the coin and remove it from GameObject list. No clue.
             }
             if(other.objectTag == "pBottom")
             {
-                IBottom bottom = (IBottom)other;
+                PlatformBottom bottom = (PlatformBottom)other;
                 ModifyScore(bottom.GetPassthroughPenalty());
             }
         }

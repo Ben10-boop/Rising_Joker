@@ -1,11 +1,12 @@
-﻿using System;
+﻿using RisingJoker.PlatformsBuilder;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Windows.Forms;
 
 namespace RisingJoker
 {
-    public class PlatformBuilder
+    public class PlatformBuilder : IPlatformsBuilder
     {
         Platform platform;
         List<MovableObject> objectsToAdd;
@@ -19,7 +20,7 @@ namespace RisingJoker
             Reset();
         }
 
-        public PlatformBuilder Reset()
+        public IPlatformsBuilder Reset()
         {
             position = new Point(0, 0);
             size = new Size(250, 20);
@@ -36,44 +37,42 @@ namespace RisingJoker
             platform = null;
         }
 
-        public PlatformBuilder SetSize(Size size)
+        public IPlatformsBuilder SetSize(Size size)
         {
             this.size = size;
-            ResetPlatform();
+            //ResetPlatform();
             return this;
         }
 
-        public PlatformBuilder SetPosition(Point position)
+        public IPlatformsBuilder SetPosition(Point position)
         {
             this.position = position;
-            ResetPlatform();
+            //ResetPlatform();
 
             return this;
         }
 
-        public PlatformBuilder SetColor(Color color)
+        public IPlatformsBuilder SetColor(Color color)
         {
             this.color = color;
-            ResetPlatform();
+            //ResetPlatform();
 
             return this;
         }
 
-        public PlatformBuilder AddCoin(Coin coin, Label form)
+        public IPlatformsBuilder AddCoin(Coin coin, Label form)
         {
             Point moveCoinTo = GetItemPositionOnPlatform(coin, form);
             coin.MoveTo(moveCoinTo);
             this.objectsToAdd.Add(coin);
-            ResetPlatform();
+            //ResetPlatform();
 
             return this;
         }
-        public PlatformBuilder AddBottom(PlatformBottom bottom, Label form)
+        public IPlatformsBuilder AddBottom(PlatformBottom bottom, Label form)
         {
-            //Point moveBottomTo = GetItemPositionOnPlatform(bottom, form);
-            //bottom.MoveTo(moveBottomTo);
             this.objectsToAdd.Add(bottom);
-            ResetPlatform();
+            //ResetPlatform();
 
             return this;
         }
@@ -86,17 +85,20 @@ namespace RisingJoker
             return new Point(xPositionInBounds, this.position.Y - other.size.Height);
         }
 
-        public Platform GetPlatform()
+        public List<Platform> GetPlatform()
         {
+            List<Platform> platforms = new List<Platform>();
             if (this.platform != null)
             {
-                return this.platform;
+                platforms.Add(this.platform);
+                return platforms;
             }
             this.platform = new Platform(size, position, color);
             SetPlatformSpeeds(platform);
             SetPlatformObjects(platform);
 
-            return platform;
+            platforms.Add(this.platform);
+            return platforms;
         }
 
         private void SetPlatformObjects(Platform platform)
@@ -124,9 +126,9 @@ namespace RisingJoker
             }
         }
 
-        public PlatformBuilder SetDirectionSpeed(MoveDirection direction, int speed)
+        public IPlatformsBuilder SetDirectionSpeed(MoveDirection direction, int speed)
         {
-            ResetPlatform();
+            //ResetPlatform();
             switch (direction)
             {
                 case MoveDirection.Up:
@@ -146,12 +148,12 @@ namespace RisingJoker
             return this;
         }
 
-        public PlatformBuilder AddEnemy(Enemy enemy, Label form)
+        public IPlatformsBuilder AddEnemy(Enemy enemy, Label form)
         {
             Point moveTo = GetItemPositionOnPlatform(enemy, form);
             enemy.MoveTo(moveTo);
             this.objectsToAdd.Add(enemy);
-            ResetPlatform();
+            //ResetPlatform();
 
             return this;
         }

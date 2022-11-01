@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace RisingJoker.PlatformFactory.Lvl2
+namespace RisingJoker.PlatformFactory.Lvl1
 {
-    internal class PlatformBottom2 : PlatformBottom
+    internal class PlatformBottom1 : PlatformBottom
     {
-        private readonly int passthroughPenalty = -73;
-        public PlatformBottom2(Size size, Point position, Color color) : base(size, position, color)
+        private readonly int passthroughPenalty = -53;
+        public PlatformBottom1(Size size, Point position, Color color) : base(size, position, color)
         {
         }
 

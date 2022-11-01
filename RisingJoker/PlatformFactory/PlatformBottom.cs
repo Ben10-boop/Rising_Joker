@@ -3,10 +3,9 @@ using System.Drawing;
 
 namespace RisingJoker
 {
-    public class PlatformBottom : MovableObject, IBottom
+    public abstract class PlatformBottom : MovableObject
     {
         public static string TAG = "pBottom";
-        private readonly int passthroughPenalty = -53;
         public PlatformBottom(Size size, Point position, Color color) : base(size, position, true, color, TAG) 
         {
         }
@@ -15,9 +14,9 @@ namespace RisingJoker
         {
         }
 
-        public int GetPassthroughPenalty()
+        public virtual int GetPassthroughPenalty()
         {
-            return passthroughPenalty;
+            return 0;
         }
     }
 }

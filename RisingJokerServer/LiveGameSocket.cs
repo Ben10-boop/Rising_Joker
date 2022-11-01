@@ -42,16 +42,12 @@ namespace RisingJokerServer
         private async void DoGameRunning()
         {
             Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 3" }));
-            //Sessions.Broadcast("Starting in 3");
             await Task.Delay(1000);
             Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 2" }));
-            //Sessions.Broadcast("Starting in 2");
             await Task.Delay(1000);
             Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Starting in 1" }));
-            //Sessions.Broadcast("Starting in 1");
             await Task.Delay(1000);
             Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Game Start!" }));
-            //Sessions.Broadcast("Game Start!");
 
             //level_1
             for (int i = 0; i < 10; i++)

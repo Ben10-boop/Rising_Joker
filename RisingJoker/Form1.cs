@@ -3,6 +3,7 @@ using RisingJoker.DTOs;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformFactory.Lvl1;
 using RisingJoker.PlatformFactory.Lvl2;
+using RisingJoker.PlatformsBuilder;
 using RisingJoker.PlayerFactoryMethod;
 using System;
 using System.Collections.Generic;
@@ -410,7 +411,7 @@ namespace RisingJoker
             else
                 platFactory = new Lvl2PlatFactory();
 
-            PlatformBuilder platformBuilder =
+            IPlatformsBuilder platformBuilder =
                 new PlatformBuilder()
                 .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
                 .SetSize(new Size(platformData.Width, platformData.Height))
@@ -431,9 +432,12 @@ namespace RisingJoker
                 platformBuilder.AddEnemy(enemy, consoleBoard);
             }
 
-            Platform platform = platformBuilder.GetPlatform();
-            gameObjects.Add(platform);
-            platform.Render();
+            List<Platform> platforms = platformBuilder.GetPlatform();
+            foreach(Platform platform in platforms)
+            {
+                gameObjects.Add(platform);
+                platform.Render();
+            }
         }
 
     }

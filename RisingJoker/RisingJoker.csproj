@@ -54,8 +54,9 @@
   <ItemGroup>
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
-    <Compile Include="PlatformFactory\Lvl1\Enemy.cs" />
-    <Compile Include="PlatformFactory\Lvl1\Coin.cs" />
+    <Compile Include="PlatformFactory\Lvl1\Coin1.cs" />
+    <Compile Include="PlatformFactory\Enemy.cs" />
+    <Compile Include="PlatformFactory\Coin.cs" />
     <Compile Include="DTOs\PlatformDto.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
@@ -65,18 +66,17 @@
     </Compile>
     <Compile Include="GameObject.cs" />
     <Compile Include="MovableObject.cs" />
-    <Compile Include="PlatformFactory\IBottom.cs" />
-    <Compile Include="PlatformFactory\ICoin.cs" />
-    <Compile Include="PlatformFactory\IEnemy.cs" />
     <Compile Include="PlatformFactory\IPlatFactory.cs" />
+    <Compile Include="PlatformFactory\Lvl1\Enemy1.cs" />
     <Compile Include="PlatformFactory\Lvl1\Lvl1PlatFactory.cs" />
+    <Compile Include="PlatformFactory\Lvl1\PlatformBottom1.cs" />
     <Compile Include="PlatformFactory\Lvl2\Coin2.cs" />
     <Compile Include="PlatformFactory\Lvl2\Enemy2.cs" />
     <Compile Include="PlatformFactory\Lvl2\Lvl2PlatFactory.cs" />
     <Compile Include="PlatformFactory\Lvl2\PlatformBottom2.cs" />
+    <Compile Include="PlatformsBuilder\IPlatformsBuilder.cs" />
     <Compile Include="PlatformsBuilder\Platform.cs" />
-    <Compile Include="PlatformFactory\Lvl1\PlatformBottom.cs" />
-    <Compile Include="PlatformsBuilder\IBuilder.cs" />
+    <Compile Include="PlatformFactory\PlatformBottom.cs" />
     <Compile Include="PlatformsBuilder\PlatformArrayBuilder.cs" />
     <Compile Include="PlatformsBuilder\PlatformBuilder.cs" />
     <Compile Include="Player.cs" />
