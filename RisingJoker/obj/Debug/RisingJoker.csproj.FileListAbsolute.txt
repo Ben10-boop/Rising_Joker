@@ -43,3 +43,18 @@ C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\Newtonsof
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\websocket-sharp.dll
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Debug\Newtonsoft.Json.xml
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Debug\RisingJoker.csproj.CopyComplete
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\RisingJoker.exe.config
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\RisingJoker.exe
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\RisingJoker.pdb
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\Newtonsoft.Json.dll
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\websocket-sharp.dll
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\bin\Debug\Newtonsoft.Json.xml
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.csproj.AssemblyReference.cache
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.csproj.SuggestedBindingRedirects.cache
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.Form1.resources
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.Properties.Resources.resources
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.csproj.GenerateResource.cache
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.csproj.CoreCompileInputs.cache
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.csproj.CopyComplete
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.exe
+D:\OneDrive2\OneDrive - Kaunas University of Technology\4. Ketvirti metai\Objektinis programų projektavimas\RisingJoker\obj\Debug\RisingJoker.pdb

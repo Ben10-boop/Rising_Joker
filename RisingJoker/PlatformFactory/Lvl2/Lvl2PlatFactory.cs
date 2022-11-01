@@ -14,14 +14,14 @@ namespace RisingJoker.PlatformFactory.Lvl2
         private readonly int enemyHeight = 15;
         private readonly int enemyWidth = 35;
 
-        public Coin CreateCoin(int xPosition)
+        public Coin CreateCoin()
         {
-            Point correctedPoint = new Point(xPosition, -coinSize);
+            Point correctedPoint = new Point(0, -coinSize);
             return new Coin2(Color.Orange, new Size(coinSize, coinSize), correctedPoint);
         }
-        public Enemy CreateEnemy(int xPosition)
+        public Enemy CreateEnemy()
         {
-            Point correctedPoint = new Point(xPosition, -enemyHeight);
+            Point correctedPoint = new Point(0, -enemyHeight);
             return new Enemy2(ColorTranslator.FromHtml("#520719"), new Size(enemyWidth, enemyHeight), correctedPoint);
         }
 

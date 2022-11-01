@@ -54,6 +54,7 @@
   <ItemGroup>
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
+    <Compile Include="PlatformFactory\ICloneable.cs" />
     <Compile Include="PlatformFactory\Lvl1\Coin1.cs" />
     <Compile Include="PlatformFactory\Enemy.cs" />
     <Compile Include="PlatformFactory\Coin.cs" />

@@ -24,6 +24,8 @@ namespace RisingJoker
     public partial class Form1 : Form
     {
         private const int FALL_SPEED = 2;
+        private Coin coin;
+        private Enemy enemy;
         public Form1()
         {
             InitializeComponent();
@@ -52,7 +54,7 @@ namespace RisingJoker
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
-        int currentLevel = 1;
+        int previousLevel = 1;
 
         //to keep track of Players data
         PlayerColor userColor = PlayerColor.None;
@@ -402,11 +404,8 @@ namespace RisingJoker
 
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
-            if (platformData.Level == 2)
-                currentLevel = 2;
-
             IPlatFactory platFactory;
-            if (currentLevel == 1)
+            if (platformData.Level == 1)
                 platFactory = new Lvl1PlatFactory();
             else
                 platFactory = new Lvl2PlatFactory();
@@ -421,15 +420,21 @@ namespace RisingJoker
             platformBuilder.AddBottom(bottom, consoleBoard);
             if (platformData.HasCoin && !addedOnce)
             {
-                Coin coin = platFactory.CreateCoin(platformData.CoinPosX);
-                gameObjects.Add(coin);
-                platformBuilder.AddCoin(coin, consoleBoard);
+                if (coin == null || platformData.Level != previousLevel)
+                    coin = platFactory.CreateCoin();
+                Coin clonedCoin = coin.Clone();
+                clonedCoin.MoveBy(new Point(platformData.CoinPosX, 0));
+                gameObjects.Add(clonedCoin);
+                platformBuilder.AddCoin(clonedCoin, consoleBoard);
             }
             if (platformData.HasEnemy && !addedOnce)
             {
-                Enemy enemy = platFactory.CreateEnemy(platformData.EnemyPosX);
-                gameObjects.Add(enemy);
-                platformBuilder.AddEnemy(enemy, consoleBoard);
+                if (enemy == null || platformData.Level != previousLevel)
+                    enemy = platFactory.CreateEnemy();
+                Enemy clonedEnemy = enemy.Clone();
+                clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
+                gameObjects.Add(clonedEnemy);
+                platformBuilder.AddEnemy(clonedEnemy, consoleBoard);
             }
 
             List<Platform> platforms = platformBuilder.GetPlatform();
@@ -438,6 +443,8 @@ namespace RisingJoker
                 gameObjects.Add(platform);
                 platform.Render();
             }
+
+            previousLevel = platformData.Level;
         }
 
     }
