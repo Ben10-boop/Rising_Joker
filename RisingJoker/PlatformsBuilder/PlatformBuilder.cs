@@ -68,6 +68,15 @@ namespace RisingJoker
 
             return this;
         }
+        public PlatformBuilder AddBottom(PlatformBottom bottom, Label form)
+        {
+            //Point moveBottomTo = GetItemPositionOnPlatform(bottom, form);
+            //bottom.MoveTo(moveBottomTo);
+            this.objectsToAdd.Add(bottom);
+            ResetPlatform();
+
+            return this;
+        }
 
         private Point GetItemPositionOnPlatform(GameObject other, Label form)
         {

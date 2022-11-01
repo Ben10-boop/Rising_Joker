@@ -12,7 +12,7 @@ namespace RisingJoker
         public Platform(Size size, Point position, Color color) : base(size, position, true, color, TAG)
         {
             this.objects = new List<MovableObject>();
-            this.objects.Add(new PlatformBottom(new Size(size.Width - 40, 10), new Point(position.X + 20, 15), color));
+            //this.objects.Add(new PlatformBottom(new Size(size.Width - 40, 10), new Point(position.X + 20, 15), color));
         }
 
         public override void OnCollisionWith(GameObject other)

@@ -1,5 +1,8 @@
 ﻿using Newtonsoft.Json;
 using RisingJoker.DTOs;
+using RisingJoker.PlatformFactory;
+using RisingJoker.PlatformFactory.Lvl1;
+using RisingJoker.PlatformFactory.Lvl2;
 using RisingJoker.PlayerFactoryMethod;
 using System;
 using System.Collections.Generic;
@@ -48,6 +51,7 @@ namespace RisingJoker
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
+        int currentLevel = 1;
 
         //to keep track of Players data
         PlayerColor userColor = PlayerColor.None;
@@ -389,7 +393,6 @@ namespace RisingJoker
                     break;
 
             }
-            //userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
             gameObjects.Add(userPlayer);
             userPlayer.Render();
         }
@@ -398,21 +401,32 @@ namespace RisingJoker
 
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
+            if (platformData.Level == 2)
+                currentLevel = 2;
+
+            IPlatFactory platFactory;
+            if (currentLevel == 1)
+                platFactory = new Lvl1PlatFactory();
+            else
+                platFactory = new Lvl2PlatFactory();
+
             PlatformBuilder platformBuilder =
                 new PlatformBuilder()
                 .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
                 .SetSize(new Size(platformData.Width, platformData.Height))
                 .SetPosition(new Point(platformData.PositionX, yPosition))
                 .SetColor(Color.Brown);
+            PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX);
+            platformBuilder.AddBottom(bottom, consoleBoard);
             if (platformData.HasCoin && !addedOnce)
             {
-                Coin coin = CoinFactory.CreateCoin(platformData.CoinPosX);
+                Coin coin = platFactory.CreateCoin(platformData.CoinPosX);
                 gameObjects.Add(coin);
                 platformBuilder.AddCoin(coin, consoleBoard);
             }
             if (platformData.HasEnemy && !addedOnce)
             {
-                Enemy enemy = EnemyFactory.CreateEnemy(platformData.EnemyPosX);
+                Enemy enemy = platFactory.CreateEnemy(platformData.EnemyPosX);
                 gameObjects.Add(enemy);
                 platformBuilder.AddEnemy(enemy, consoleBoard);
             }

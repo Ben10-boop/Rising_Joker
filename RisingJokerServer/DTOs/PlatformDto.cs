@@ -2,6 +2,7 @@
 {
     internal class PlatformDto
     {
+        public int Level { get; set; } = 1;
         public int Width { get; set; }
         public int Height { get; set; }
         public int PositionX { get; set; }

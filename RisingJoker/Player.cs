@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using RisingJoker.PlatformFactory;
+using System.Collections.Generic;
 using System.Drawing;
 
 namespace RisingJoker
@@ -44,12 +45,19 @@ namespace RisingJoker
             }
             if (other.objectTag == "enemy")
             {
-                ModifyScore(-1);
+                IEnemy enemy = (IEnemy)other;
+                ModifyScore(enemy.GetContactPenalty());
             }
             if (other.objectTag == "coin")
             {
-                //ModifyScore(50);
+                ICoin coin = (ICoin)other;
+                //ModifyScore(coin.GetValue());
                 //Delete the coin and remove it from GameObject list. No clue.
+            }
+            if(other.objectTag == "pBottom")
+            {
+                IBottom bottom = (IBottom)other;
+                ModifyScore(bottom.GetPassthroughPenalty());
             }
         }
 
