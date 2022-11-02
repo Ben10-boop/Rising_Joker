@@ -61,9 +61,11 @@
     <Compile Include="BaseGameObjects\MovableObject.cs" />
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
+    <Compile Include="EnemyObject\EnemyBuilder.cs" />
+    <Compile Include="PlatformFactory\GoldPlatform\GoldPlatform.cs" />
     <Compile Include="PlatformFactory\ICloneable.cs" />
-    <Compile Include="PlatformFactory\IEnemy.cs" />
-    <Compile Include="PlatformFactory\Enemy.cs" />
+    <Compile Include="EnemyObject\IEnemy.cs" />
+    <Compile Include="EnemyObject\Enemy.cs" />
     <Compile Include="PlatformFactory\Coin.cs" />
     <Compile Include="DTOs\PlatformDto.cs" />
     <Compile Include="EnemyObject\EnemyMovementDecorator.cs" />
@@ -78,7 +80,8 @@
     </Compile>
     <Compile Include="PlatformFactory\IPlatFactory.cs" />
     <Compile Include="PlatformFactory\IPoints.cs" />
-    <Compile Include="PlatformFactory\PlatFactory.cs" />
+    <Compile Include="PlatformFactory\RegularPlatform\RegularPlatform.cs" />
+    <Compile Include="PlatformFactory\ScaryPlatform\ScaryPlatform.cs" />
     <Compile Include="PlatformsBuilder\IPlatformBuilder.cs" />
     <Compile Include="PlatformsBuilder\Platform.cs" />
     <Compile Include="PlatformFactory\PlatformBottom.cs" />

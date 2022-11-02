@@ -1,9 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RisingJoker.BaseGameObjects;
 using RisingJoker.DTOs;
-using RisingJoker.EnemyObject;
 using RisingJoker.PlatformFactory;
-using RisingJoker.PlatformFactory.Lvl2;
 using RisingJoker.PlatformsBuilder;
 using RisingJoker.PlayerFactoryMethod;
 using RisingJoker.Themes;
@@ -26,8 +24,8 @@ namespace RisingJoker
     public partial class Form1 : Form
     {
         private const int FALL_SPEED = 2;
-        private Coin coin;
-        private Enemy enemy;
+        private Dictionary<PlatFactoryType, Coin> coinMap = new Dictionary<PlatFactoryType, Coin>();
+        private Dictionary<PlatFactoryType, IEnemy> enemyMap = new Dictionary<PlatFactoryType, IEnemy>();
         private List<PlatformColorTheme> platformThemeList;
         public Form1()
         {
@@ -429,7 +427,38 @@ namespace RisingJoker
         {
             //initialising appropriate factory
             PlatformColorTheme platTheme = platformThemeList[(platformData.Level - 1) % 2];
-            IPlatFactory platFactory = new PlatFactory(platTheme);
+            IPlatFactory platFactory;
+            PlatFactoryType platFactoryType;
+
+            if (platformData.HasCoin && !platformData.HasEnemy)
+            {
+                platFactory = new GoldPlatform();
+                platFactoryType = PlatFactoryType.Gold;
+            }
+            else if (!platformData.HasCoin && platformData.HasEnemy)
+            {
+                platFactory = new ScaryPlatform();
+                platFactoryType = PlatFactoryType.Scary;
+
+            }
+            else
+            {
+                platFactory = new RegularPlatform(platTheme);
+                platFactoryType = PlatFactoryType.Regular;
+
+            }
+
+            if (platformData.Level != previousLevel || !coinMap.ContainsKey(platFactoryType) || !enemyMap.ContainsKey(platFactoryType))
+            {
+
+                coinMap[platFactoryType] = platFactory.CreateCoin(Math.Max(25 - 5 * platformData.Level, 5), (int)Math.Log(5 * Math.Pow(platformData.Level, 2)));
+                enemyMap[platFactoryType] = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(20 * Math.Pow(platformData.Level, 2)));
+                previousLevel = platformData.Level;
+            }
+
+
+            IEnemy enemy = enemyMap[platFactoryType];
+            Coin coin = coinMap[platFactoryType];
 
             IPlatformBuilder platformBuilder = new PlatformBuilder();
             bool shouldAddPlatformBottom = platformData.PlatformAmount == 1;
@@ -450,14 +479,6 @@ namespace RisingJoker
                     platformBuilder.AddObjToPlatform(bottom, consoleBoard, true);
                 }
 
-                //updating coin and enemy if new level started
-                if (platformData.Level != previousLevel)
-                {
-                    coin = platFactory.CreateCoin(Math.Max(25 - 5 * platformData.Level, 5), (int)Math.Log(5 * Math.Pow(platformData.Level, 2)));
-                    enemy = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(20 * Math.Pow(platformData.Level, 2)));
-                    previousLevel++;
-                }
-
                 //adding coin and enemy if needed
                 if (platformData.HasCoin && !addedOnce)
                 {
@@ -469,9 +490,6 @@ namespace RisingJoker
                 if (platformData.HasEnemy && !addedOnce)
                 {
                     IEnemy clonedEnemy = enemy.Clone();
-                    clonedEnemy = new WalkingEnemy(clonedEnemy);
-                    clonedEnemy = new HoveringEnemy(clonedEnemy);
-                    clonedEnemy = new TeleportingEnemy(clonedEnemy);
 
                     clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
 

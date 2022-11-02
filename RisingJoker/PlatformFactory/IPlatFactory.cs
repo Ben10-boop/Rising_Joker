@@ -2,10 +2,16 @@
 
 namespace RisingJoker.PlatformFactory
 {
+    public enum PlatFactoryType
+    {
+        Gold,
+        Regular,
+        Scary
+    }
     internal interface IPlatFactory
     {
-        Coin CreateCoin(int coinSize, int coinValue);
-        Enemy CreateEnemy(Size enemySize, int penalty);
-        PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int penalty);
+        Coin CreateCoin(int coinSize, int baseCoinValue);
+        IEnemy CreateEnemy(Size enemySize, int basePenalty);
+        PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int basePenalty);
     }
 }
