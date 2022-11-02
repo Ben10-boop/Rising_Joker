@@ -1,13 +1,14 @@
-﻿using RisingJoker.PlatformsBuilder;
+﻿using RisingJoker.EnemyObject;
+using RisingJoker.PlatformsBuilder;
 using System.Drawing;
 
-namespace RisingJoker.PlatformFactory.Lvl2
+namespace RisingJoker.PlatformFactory
 {
-    internal class PlatFactory : IPlatFactory
+    internal class RegularPlatform : IPlatFactory
     {
         private PlatformColorTheme Theme;
 
-        public PlatFactory(PlatformColorTheme theme)
+        public RegularPlatform(PlatformColorTheme theme)
         {
             Theme = theme;
         }
@@ -17,10 +18,10 @@ namespace RisingJoker.PlatformFactory.Lvl2
             Point correctedPoint = new Point(0, -coinSize);
             return new Coin(Theme.CoinColor, new Size(coinSize, coinSize), correctedPoint, coinValue);
         }
-        public Enemy CreateEnemy(Size enemySize, int penalty)
+        public IEnemy CreateEnemy(Size enemySize, int penalty)
         {
             Point correctedPoint = new Point(0, -enemySize.Width);
-            return new Enemy(Theme.EnemyColor, enemySize, correctedPoint, penalty);
+            return new EnemyBuilder().SetBaseEnemy(new Enemy(Theme.EnemyColor, enemySize, correctedPoint, penalty)).AddWalking().GetEnemy();
         }
 
         public PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int penalty)
