@@ -7,7 +7,7 @@ namespace RisingJoker
         Left, Right, Up, Down
     }
 
-    public abstract class MovableObject : GameObject // , IClonable
+    public abstract class MovableObject : GameObject
     {
         public virtual int LeftDirectionSpeed { get; set; }
         public virtual int RightDirectionSpeed { get; set; }

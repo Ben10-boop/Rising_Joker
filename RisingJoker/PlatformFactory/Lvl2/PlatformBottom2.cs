@@ -9,7 +9,7 @@ namespace RisingJoker.PlatformFactory.Lvl2
 {
     internal class PlatformBottom2 : PlatformBottom
     {
-        private readonly int passthroughPenalty = -73;
+        private readonly int passthroughPenalty = -10;
         public PlatformBottom2(Size size, Point position, Color color) : base(size, position, color)
         {
         }

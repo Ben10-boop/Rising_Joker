@@ -52,7 +52,27 @@ namespace RisingJokerServer
             //level_1
             for (int i = 0; i < 10; i++)
             {
-                PlatformDto platform = GenerateRandomLvl1Platform();
+                PlatformDto platform;
+                if (i < 7)
+                {
+                    platform = new PlatformDto
+                    {
+                        platformAmount = 3,
+                        nextPlatformOffset = 100,
+                        Width = 50,
+                        Height = 20,
+                        PositionX = 40,
+                        HasCoin = true,
+                        HasEnemy = false,
+                        CoinPosX = 10,
+                        EnemyPosX = 0
+                    };
+                }
+                else
+                {
+                    platform = GenerateRandomLvl1Platform();
+                }
+
                 Sessions.Broadcast(JsonConvert.SerializeObject(platform));
                 Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
                 await Task.Delay(1000);

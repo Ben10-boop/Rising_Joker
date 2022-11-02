@@ -8,7 +8,6 @@ using System.Windows.Forms;
 
 namespace RisingJoker.PlatformsBuilder
 {
-    //UNFINISHED, WORK IN PROGRESS
     internal class PlatformArrayBuilder : IPlatformsBuilder
     {
         List<Platform> platforms;
@@ -71,7 +70,27 @@ namespace RisingJoker.PlatformsBuilder
         {
             Point moveCoinTo = GetItemPositionOnPlatform(coin, form);
             coin.MoveTo(moveCoinTo);
-            //this.objectsToAdd.Add(coin);
+            this.objectsToAdd[0].Add(coin);
+            for (int i = 1; i < PlatformAmount; i++)
+            {
+                Coin nextCoin = coin.Clone();
+                nextCoin.MoveBy(new Point(NextPlatformOffset * i, 0));
+                this.objectsToAdd[i].Add(nextCoin);
+            }
+
+            return this;
+        }
+        public IPlatformsBuilder AddEnemy(Enemy enemy, Label form)
+        {
+            Point moveEnemyTo = GetItemPositionOnPlatform(enemy, form);
+            enemy.MoveTo(moveEnemyTo);
+            this.objectsToAdd[0].Add(enemy);
+            for (int i = 1; i < PlatformAmount; i++)
+            {
+                Enemy nextEnemy = enemy.Clone();
+                nextEnemy.MoveBy(new Point(NextPlatformOffset * i, 0));
+                this.objectsToAdd[i].Add(nextEnemy);
+            }
 
             return this;
         }
@@ -104,23 +123,39 @@ namespace RisingJoker.PlatformsBuilder
             return this;
         }
 
-        public IPlatformsBuilder AddEnemy(Enemy enemy, Label form)
-        {
-            Point moveTo = GetItemPositionOnPlatform(enemy, form);
-            enemy.MoveTo(moveTo);
-            //this.objectsToAdd.Add(enemy);
-
-            return this;
-        }
-
         public IPlatformsBuilder AddBottom(PlatformBottom bottom, Label form)
         {
             return this;
         }
         public List<Platform> GetPlatform()
         {
-            
+            platforms = new List<Platform>();
+            for (int i = 0; i < PlatformAmount; i++)
+            {
+                platforms.Add(new Platform(size, new Point(position.X + NextPlatformOffset * i, position.Y), color));
+                SetPlatformSpeeds(platforms[i]);
+                objectsToAdd[i].ForEach(obj => platforms[i].AddObject(obj));
+            }
             return platforms;
+        }
+        private void SetPlatformSpeeds(Platform platform)
+        {
+            if (speeds.ContainsKey(MoveDirection.Up))
+            {
+                platform.UpDirectionSpeed = speeds[MoveDirection.Up];
+            }
+            if (speeds.ContainsKey(MoveDirection.Down))
+            {
+                platform.DownDirectionSpeed = speeds[MoveDirection.Down];
+            }
+            if (speeds.ContainsKey(MoveDirection.Left))
+            {
+                platform.LeftDirectionSpeed = speeds[MoveDirection.Left];
+            }
+            if (speeds.ContainsKey(MoveDirection.Right))
+            {
+                platform.RightDirectionSpeed = speeds[MoveDirection.Right];
+            }
         }
     }
 }

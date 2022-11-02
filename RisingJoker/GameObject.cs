@@ -4,7 +4,7 @@ using System.Windows.Forms;
 
 namespace RisingJoker
 {
-    public abstract class GameObject // : IClonable
+    public abstract class GameObject
     {
         protected PictureBox objectDisplay;
         public event EventHandler ObjectDestruction;

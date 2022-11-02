@@ -54,7 +54,7 @@ namespace RisingJoker
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
-        int previousLevel = 1;
+        int previousLevel = 0;
 
         //to keep track of Players data
         PlayerColor userColor = PlayerColor.None;
@@ -404,24 +404,48 @@ namespace RisingJoker
 
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
+            //initialising appropriate factory
             IPlatFactory platFactory;
             if (platformData.Level == 1)
                 platFactory = new Lvl1PlatFactory();
             else
                 platFactory = new Lvl2PlatFactory();
 
-            IPlatformsBuilder platformBuilder =
+            //initialising appropriate builder
+            IPlatformsBuilder platformBuilder;
+            if (platformData.platformAmount == 1)
+            {
+                platformBuilder =
                 new PlatformBuilder()
                 .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
                 .SetSize(new Size(platformData.Width, platformData.Height))
                 .SetPosition(new Point(platformData.PositionX, yPosition))
                 .SetColor(Color.Brown);
-            PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX);
-            platformBuilder.AddBottom(bottom, consoleBoard);
+                PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX);
+                gameObjects.Add(bottom);
+                platformBuilder.AddBottom(bottom, consoleBoard);
+            }
+            else
+            {
+                platformBuilder = 
+                    new PlatformArrayBuilder(platformData.platformAmount, platformData.nextPlatformOffset)
+                    .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
+                    .SetSize(new Size(platformData.Width, platformData.Height))
+                    .SetPosition(new Point(platformData.PositionX, yPosition))
+                    .SetColor(Color.Brown);
+            }
+
+            //updating coin and enemy if new level started
+            if (platformData.Level != previousLevel)
+            {
+                coin = platFactory.CreateCoin();
+                enemy = platFactory.CreateEnemy();
+                previousLevel++;
+            }
+
+            //adding coin and enemy if needed
             if (platformData.HasCoin && !addedOnce)
             {
-                if (coin == null || platformData.Level != previousLevel)
-                    coin = platFactory.CreateCoin();
                 Coin clonedCoin = coin.Clone();
                 clonedCoin.MoveBy(new Point(platformData.CoinPosX, 0));
                 gameObjects.Add(clonedCoin);
@@ -429,14 +453,13 @@ namespace RisingJoker
             }
             if (platformData.HasEnemy && !addedOnce)
             {
-                if (enemy == null || platformData.Level != previousLevel)
-                    enemy = platFactory.CreateEnemy();
                 Enemy clonedEnemy = enemy.Clone();
                 clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
                 gameObjects.Add(clonedEnemy);
                 platformBuilder.AddEnemy(clonedEnemy, consoleBoard);
             }
 
+            //adding platform(s) to the game window
             List<Platform> platforms = platformBuilder.GetPlatform();
             foreach(Platform platform in platforms)
             {
@@ -444,7 +467,7 @@ namespace RisingJoker
                 platform.Render();
             }
 
-            previousLevel = platformData.Level;
+            //previousLevel = platformData.Level;
         }
 
     }
