@@ -27,7 +27,7 @@ namespace RisingJokerServer
                     Send(JsonConvert.SerializeObject(new StringDto { Value = $"Joined as {color}" }));
                     Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = $"{color} player joined the game" }));
                 }
-                Send("Player already taken");
+                Send(JsonConvert.SerializeObject(new StringDto { Value = "Player already taken" }));
             }
             catch (Exception)
             {

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RisingJoker.BaseGameObjects;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RisingJoker.PlayerFactoryMethod
 {
@@ -16,7 +12,7 @@ namespace RisingJoker.PlayerFactoryMethod
         {
 
         }
-        public override void OnCollisionWith(GameObject other)
+        public override void OnCollisionWith(IGameObject other)
         {
             base.OnCollisionWith(other);
             if (other.objectTag == "player")

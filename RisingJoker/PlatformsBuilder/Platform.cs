@@ -1,28 +1,29 @@
-﻿using System;
+﻿using RisingJoker.BaseGameObjects;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Linq;
 
 namespace RisingJoker
 {
     public class Platform : MovableObject
     {
         public static string TAG = "platform";
-        private readonly List<MovableObject> objects;
+        private readonly List<IMovableObject> objects;
 
         public Platform(Size size, Point position, Color color) : base(size, position, true, color, TAG)
         {
-            this.objects = new List<MovableObject>();
-            //this.objects.Add(new PlatformBottom(new Size(size.Width - 40, 10), new Point(position.X + 20, 15), color));
+            this.objects = new List<IMovableObject>();
         }
 
-        public override void OnCollisionWith(GameObject other)
+        public override void OnCollisionWith(IGameObject other)
         {
-            if (!(other is MovableObject) || other.objectTag != "player")
+            if (!(other is Player) || other.objectTag != "player")
             {
                 return;
             }
 
-            MovableObject obj = (MovableObject)other;
+            Player obj = (Player)other;
 
             bool isFalling = obj.GetDirectionSpeed(MoveDirection.Down) + obj.GetDirectionSpeed(MoveDirection.Up) > 0;
             Rectangle objBounds = obj.GetBounds();
@@ -53,22 +54,13 @@ namespace RisingJoker
             base.Move();
         }
 
-        public override void MoveDisplayObject()
-        {
-            objects.ForEach(o =>
-            {
-                o.MoveDisplayObject();
-            });
-
-            base.MoveDisplayObject();
-        }
-
-        public void AddObject(MovableObject item)
+        public void AddObject(IMovableObject item)
         {
             objects.Add(item);
+            item.ObjectDestruction += RemoveObject;
         }
 
-        public void RemoveObject(MovableObject item)
+        public void RemoveObject(IMovableObject item)
         {
             if (objects.Find(o => o == item) == null)
             {
@@ -80,17 +72,12 @@ namespace RisingJoker
 
         private void RemoveObject(object sender, EventArgs e)
         {
-            RemoveObject(sender as MovableObject);
+            RemoveObject(sender as IMovableObject);
         }
 
-        public override void Render()
+        public override bool IsInScreen()
         {
-            objects.ForEach(o =>
-            {
-                o.Render();
-                o.ObjectDestruction += RemoveObject;
-            });
-            base.Render();
+            return objects.Any(o => o.IsInScreen()) || base.IsInScreen();
         }
     }
 }

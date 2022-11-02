@@ -1,26 +1,20 @@
-﻿using RisingJoker.PlatformFactory;
-using System;
+﻿using RisingJoker.BaseGameObjects;
 using System.Drawing;
 
-namespace RisingJoker
+namespace RisingJoker.PlatformFactory
 {
-    public abstract class Enemy : MovableObject, ICloneable<Enemy>
+    public class Enemy : MovableObject, IEnemy
     {
         public static string TAG = "enemy";
-        public Enemy(Color color, Size size, Point position) : base(size, position, true, color, TAG) { }
-
-        public override void OnCollisionWith(GameObject other)
+        public int Points { get; }
+        public Enemy(Color color, Size size, Point position, int contactPenalty) : base(size, position, true, color, TAG)
         {
+            Points = contactPenalty;
         }
 
-        public virtual int GetContactPenalty()
+        public virtual IEnemy Clone()
         {
-            return 0;
-        }
-
-        public Enemy Clone()
-        {
-            return (Enemy)this.MemberwiseClone();
+            return (IEnemy)this.MemberwiseClone();
         }
     }
 }

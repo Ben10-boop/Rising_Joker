@@ -1,21 +1,17 @@
-﻿using RisingJoker.PlatformFactory;
-using System;
+﻿using RisingJoker.BaseGameObjects;
 using System.Drawing;
 
-namespace RisingJoker
+namespace RisingJoker.PlatformFactory
 {
-    public abstract class Coin : MovableObject, ICloneable<Coin>
+    public class Coin : MovableObject, ICloneable<Coin>, IPoints
     {
         public static string TAG = "coin";
-        public Coin(Color color, Size size, Point position) : base(size, position, true, color, TAG) { }
 
-        public override void OnCollisionWith(GameObject other)
-        {
-        }
+        public int Points { get; }
 
-        public virtual int GetValue()
+        public Coin(Color color, Size size, Point position, int coinValue) : base(size, position, true, color, TAG)
         {
-            return 0;
+            Points = coinValue;
         }
 
         public Coin Clone()

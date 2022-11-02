@@ -1,10 +1,12 @@
 ﻿using Newtonsoft.Json;
+using RisingJoker.BaseGameObjects;
 using RisingJoker.DTOs;
+using RisingJoker.EnemyObject;
 using RisingJoker.PlatformFactory;
-using RisingJoker.PlatformFactory.Lvl1;
 using RisingJoker.PlatformFactory.Lvl2;
 using RisingJoker.PlatformsBuilder;
 using RisingJoker.PlayerFactoryMethod;
+using RisingJoker.Themes;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -26,6 +28,7 @@ namespace RisingJoker
         private const int FALL_SPEED = 2;
         private Coin coin;
         private Enemy enemy;
+        private List<PlatformColorTheme> platformThemeList;
         public Form1()
         {
             InitializeComponent();
@@ -43,8 +46,6 @@ namespace RisingJoker
 
         bool needToStartGame, GameRunning, isWaitingForResponse;
 
-        List<GameObject> gameObjects = new List<GameObject>();
-
         //server stuff
         static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
@@ -59,6 +60,7 @@ namespace RisingJoker
         //to keep track of Players data
         PlayerColor userColor = PlayerColor.None;
         Player userPlayer;
+        List<IGameObject> gameObjects = new List<IGameObject>();
         List<Player> opponents = new List<Player>();
 
         //data objects that are received from server
@@ -76,7 +78,7 @@ namespace RisingJoker
         */
         private void GameTickEvent(object sender, EventArgs e)
         {
-            if (GameRunning)
+            if (GameRunning && !needToStartGame)
             {
                 RunGame();
                 return;
@@ -111,42 +113,19 @@ namespace RisingJoker
 
         private void RunGame()
         {
+            var ranNum = new Random().Next();
             currentTime += 0.02;
             scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", userPlayer.GetScore(), currentTime);
             if (currentTime >= nextSpawnTime && platformToSpawnData != null)
             {
-                userPlayer.ModifyScore(10);
+                if (userPlayer != null)
+                    userPlayer.ModifyScore(10);
                 nextSpawnTime += 1;
                 SpawnPlatform(platformToSpawnData, 0);
                 platformToSpawnData = null;
             }
-            userPlayer.UpdateUniqueMechanicPoints(currentTime);
-            gameObjects.ForEach(obj =>
-            {
-                MovableObject movableObject = obj is MovableObject @object ? @object : null;
-                if (movableObject != null)
-                {
-                    movableObject.Move();
-                }
-
-                gameObjects.ForEach(otherObj =>
-                {
-                    if (otherObj == obj)
-                    {
-                        return;
-                    }
-
-                    if (obj.IsCollidingWith(otherObj))
-                    {
-                        obj.OnCollisionWith(otherObj);
-                    }
-                });
-
-                if (movableObject != null)
-                {
-                    movableObject.MoveDisplayObject();
-                }
-            });
+            if (userPlayer != null)
+                userPlayer.UpdateUniqueMechanicPoints(currentTime);
             UpdateOpponentsPositions();
             playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
             {
@@ -154,12 +133,54 @@ namespace RisingJoker
                 PositionX = userPlayer.position.X,
                 PositionY = userPlayer.position.Y
             }));
+
+            // This is the last call it should make
+            // So do everything before!!!!!!!!!!!!!
+            List<IGameObject> objectsToRemove = new List<IGameObject>();
+            for (int gameObjectIndex = 0; gameObjectIndex < gameObjects.Count; gameObjectIndex++)
+            {
+                var obj = gameObjects[gameObjectIndex];
+                IMovableObject movableObject = obj is IMovableObject @object ? @object : null;
+                if (movableObject != null)
+                {
+                    movableObject.Move();
+                }
+                for (int i = gameObjectIndex; i < gameObjects.Count; i++)
+                {
+
+                    var otherObj = gameObjects[i];
+                    try
+                    {
+                        if (obj.IsCollidingWith(otherObj))
+                        {
+                            obj.OnCollisionWith(otherObj);
+                            otherObj.OnCollisionWith(obj);
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine(obj.objectTag);
+                    }
+                }
+                if (!obj.IsInScreen())
+                {
+                    objectsToRemove.Add(obj);
+                }
+                obj.Render();
+            };
+            objectsToRemove.ForEach((o) =>
+            {
+                o.RemoveFromScreen();
+                gameObjects.Remove(o);
+
+            });
         }
 
         private void StartGame()
         {
             GameObject.SetGameScreen(ActiveForm);
 
+            platformThemeList = ThemesReader.ReadThemes<PlatformColorTheme>("./Themes/PlatformThemes.json");
             SpawnPlayer();
             foreach (Control x in this.Controls)
             {
@@ -225,6 +246,7 @@ namespace RisingJoker
 
 
             GameRunning = true;
+            needToStartGame = false;
         }
 
         private void UpdateOpponentsPositions()
@@ -299,7 +321,7 @@ namespace RisingJoker
             {
                 userPlayer.SetMovement(MoveDirection.Right, isMoving);
             }
-            if (e.KeyCode == Keys.Space)
+            if (e.KeyCode == Keys.Up)
             {
                 userPlayer.SetMovement(MoveDirection.Up, isMoving);
             }
@@ -310,6 +332,7 @@ namespace RisingJoker
         //Message from JoinGame service
         private void Ws_OnMessage(object sender, MessageEventArgs e)
         {
+            Console.WriteLine(e.Data);
             StringDto joinResult = JsonConvert.DeserializeObject<StringDto>(e.Data);
             switch (joinResult.Value)
             {
@@ -396,8 +419,8 @@ namespace RisingJoker
                     break;
 
             }
+
             gameObjects.Add(userPlayer);
-            userPlayer.Render();
         }
 
         //Method that spawns a platform with specified parameters (received from server)
@@ -405,69 +428,61 @@ namespace RisingJoker
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
             //initialising appropriate factory
-            IPlatFactory platFactory;
-            if (platformData.Level == 1)
-                platFactory = new Lvl1PlatFactory();
-            else
-                platFactory = new Lvl2PlatFactory();
+            PlatformColorTheme platTheme = platformThemeList[(platformData.Level - 1) % 2];
+            IPlatFactory platFactory = new PlatFactory(platTheme);
 
-            //initialising appropriate builder
-            IPlatformsBuilder platformBuilder;
-            if (platformData.PlatformAmount == 1)
+            IPlatformBuilder platformBuilder = new PlatformBuilder();
+            bool shouldAddPlatformBottom = platformData.PlatformAmount == 1;
+
+            for (int platformIndex = 0; platformIndex < platformData.PlatformAmount; platformIndex++)
             {
-                platformBuilder =
-                new PlatformBuilder()
+                var xOffset = platformData.NextPlatformOffset * platformIndex;
+                platformBuilder
                 .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
                 .SetSize(new Size(platformData.Width, platformData.Height))
-                .SetPosition(new Point(platformData.PositionX, yPosition))
+                .SetPosition(new Point(platformData.PositionX + xOffset, yPosition))
                 .SetColor(Color.Brown);
-                PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX);
-                gameObjects.Add(bottom);
-                platformBuilder.AddBottom(bottom, consoleBoard);
-            }
-            else
-            {
-                platformBuilder = 
-                    new PlatformArrayBuilder(platformData.PlatformAmount, platformData.NextPlatformOffset)
-                    .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
-                    .SetSize(new Size(platformData.Width, platformData.Height))
-                    .SetPosition(new Point(platformData.PositionX, yPosition))
-                    .SetColor(Color.Brown);
-            }
 
-            //updating coin and enemy if new level started
-            if (platformData.Level != previousLevel)
-            {
-                coin = platFactory.CreateCoin();
-                enemy = platFactory.CreateEnemy();
-                previousLevel++;
-            }
+                if (shouldAddPlatformBottom)
+                {
+                    PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX, -(int)Math.Log(10 * Math.Pow(platformData.Level, 2)));
+                    gameObjects.Add(bottom);
+                    platformBuilder.AddObjToPlatform(bottom, consoleBoard, true);
+                }
 
-            //adding coin and enemy if needed
-            if (platformData.HasCoin && !addedOnce)
-            {
-                Coin clonedCoin = coin.Clone();
-                clonedCoin.MoveBy(new Point(platformData.CoinPosX, 0));
-                gameObjects.Add(clonedCoin);
-                platformBuilder.AddCoin(clonedCoin, consoleBoard);
-            }
-            if (platformData.HasEnemy && !addedOnce)
-            {
-                Enemy clonedEnemy = enemy.Clone();
-                clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
-                gameObjects.Add(clonedEnemy);
-                platformBuilder.AddEnemy(clonedEnemy, consoleBoard);
-            }
+                //updating coin and enemy if new level started
+                if (platformData.Level != previousLevel)
+                {
+                    coin = platFactory.CreateCoin(Math.Max(25 - 5 * platformData.Level, 5), (int)Math.Log(5 * Math.Pow(platformData.Level, 2)));
+                    enemy = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(20 * Math.Pow(platformData.Level, 2)));
+                    previousLevel++;
+                }
 
-            //adding platform(s) to the game window
-            List<Platform> platforms = platformBuilder.GetPlatform();
-            foreach(Platform platform in platforms)
-            {
+                //adding coin and enemy if needed
+                if (platformData.HasCoin && !addedOnce)
+                {
+                    Coin clonedCoin = coin.Clone();
+                    clonedCoin.MoveBy(new Point(platformData.CoinPosX, 0));
+                    platformBuilder.AddObjToPlatform(clonedCoin, consoleBoard);
+                    gameObjects.Add(clonedCoin);
+                }
+                if (platformData.HasEnemy && !addedOnce)
+                {
+                    IEnemy clonedEnemy = enemy.Clone();
+                    clonedEnemy = new WalkingEnemy(clonedEnemy);
+                    clonedEnemy = new HoveringEnemy(clonedEnemy);
+                    clonedEnemy = new TeleportingEnemy(clonedEnemy);
+
+                    clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
+
+                    platformBuilder.AddObjToPlatform(clonedEnemy, consoleBoard);
+                    gameObjects.Add(clonedEnemy);
+                }
+                platformBuilder.SetColor(platTheme.MainColor);
+                Platform platform = platformBuilder.GetPlatform();
                 gameObjects.Add(platform);
-                platform.Render();
+                platformBuilder.Reset();
             }
-
-            //previousLevel = platformData.Level;
         }
 
     }

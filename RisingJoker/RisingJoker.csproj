@@ -5,7 +5,7 @@
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{BFA82B5D-B4C5-4ABF-A4F0-4CBE23CD8B1A}</ProjectGuid>
-    <OutputType>WinExe</OutputType>
+    <OutputType>Exe</OutputType>
     <RootNamespace>RisingJoker</RootNamespace>
     <AssemblyName>RisingJoker</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
@@ -32,6 +32,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -52,34 +55,35 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BaseGameObjects\GameObject.cs" />
+    <Compile Include="BaseGameObjects\IGameObject.cs" />
+    <Compile Include="BaseGameObjects\IMovableObject.cs" />
+    <Compile Include="BaseGameObjects\MovableObject.cs" />
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="PlatformFactory\ICloneable.cs" />
-    <Compile Include="PlatformFactory\Lvl1\Coin1.cs" />
+    <Compile Include="PlatformFactory\IEnemy.cs" />
     <Compile Include="PlatformFactory\Enemy.cs" />
     <Compile Include="PlatformFactory\Coin.cs" />
     <Compile Include="DTOs\PlatformDto.cs" />
+    <Compile Include="EnemyObject\EnemyMovementDecorator.cs" />
+    <Compile Include="EnemyObject\HoveringEnemy.cs" />
+    <Compile Include="EnemyObject\TeleportingEnemy.cs" />
+    <Compile Include="EnemyObject\WalkingEnemy.cs" />
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="GameObject.cs" />
-    <Compile Include="MovableObject.cs" />
     <Compile Include="PlatformFactory\IPlatFactory.cs" />
-    <Compile Include="PlatformFactory\Lvl1\Enemy1.cs" />
-    <Compile Include="PlatformFactory\Lvl1\Lvl1PlatFactory.cs" />
-    <Compile Include="PlatformFactory\Lvl1\PlatformBottom1.cs" />
-    <Compile Include="PlatformFactory\Lvl2\Coin2.cs" />
-    <Compile Include="PlatformFactory\Lvl2\Enemy2.cs" />
-    <Compile Include="PlatformFactory\Lvl2\Lvl2PlatFactory.cs" />
-    <Compile Include="PlatformFactory\Lvl2\PlatformBottom2.cs" />
-    <Compile Include="PlatformsBuilder\IPlatformsBuilder.cs" />
+    <Compile Include="PlatformFactory\IPoints.cs" />
+    <Compile Include="PlatformFactory\PlatFactory.cs" />
+    <Compile Include="PlatformsBuilder\IPlatformBuilder.cs" />
     <Compile Include="PlatformsBuilder\Platform.cs" />
     <Compile Include="PlatformFactory\PlatformBottom.cs" />
-    <Compile Include="PlatformsBuilder\PlatformArrayBuilder.cs" />
     <Compile Include="PlatformsBuilder\PlatformBuilder.cs" />
+    <Compile Include="Themes\PlatformColorTheme.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerFactoryMethod\BluePlayer.cs" />
     <Compile Include="PlayerFactoryMethod\BluePlayerCreator.cs" />
@@ -90,6 +94,7 @@
     <Compile Include="PlayerFactoryMethod\RedPlayerCreator.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Themes\ThemesReader.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>
@@ -112,10 +117,18 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="Themes\PlatformThemes.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <UserProperties themes_4platformthemes_1json__JsonSchema="https://cdn.jsdelivr.net/gh/roadrunner-server/roadrunner@latest/schemas/config/2.0.schema.json" />
+    </VisualStudio>
+  </ProjectExtensions>
 </Project>
