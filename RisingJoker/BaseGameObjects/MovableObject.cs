@@ -1,18 +1,21 @@
 ﻿using System.Drawing;
 
-namespace RisingJoker
+namespace RisingJoker.BaseGameObjects
 {
     public enum MoveDirection
     {
         Left, Right, Up, Down
     }
 
-    public abstract class MovableObject : GameObject
+    public abstract class MovableObject : GameObject, IMovableObject
     {
         public virtual int LeftDirectionSpeed { get; set; }
         public virtual int RightDirectionSpeed { get; set; }
         public virtual int UpDirectionSpeed { get; set; }
         public virtual int DownDirectionSpeed { get; set; }
+        // Platform as in restriction - window size, platform size, anything that has restrictions
+        public virtual int ParentXStart { get; set; }
+        public virtual int ParentXEnd { get; set; }
 
 
         public MovableObject(Size size, Point position, bool isVisible, Color color, string TAG) : base(size, position, isVisible, color, TAG) { }
@@ -31,12 +34,6 @@ namespace RisingJoker
         {
             this.position = new Point(moveTo.X, moveTo.Y);
 
-        }
-
-        public virtual void MoveDisplayObject()
-        {
-            this.objectDisplay.Left = position.X;
-            this.objectDisplay.Top = position.Y;
         }
 
         public virtual int GetDirectionSpeed(MoveDirection direction)

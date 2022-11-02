@@ -59,7 +59,7 @@ namespace RisingJokerServer
             //level_1
             for (int i = 0; i < 10; i++)
             {
-                if(rand.Next(0, 10) < 7)
+                if (rand.Next(0, 10) < 7)
                 {
                     platGenContext.SetStrategy(platformStrategy);
                 }

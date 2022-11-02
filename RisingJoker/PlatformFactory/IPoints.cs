@@ -1,7 +1,7 @@
 ﻿namespace RisingJoker.PlatformFactory
 {
-    public interface ICloneable<T>
+    public interface IPoints
     {
-        T Clone();
+        int Points { get; }
     }
 }

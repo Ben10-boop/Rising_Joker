@@ -1,6 +1,7 @@
-﻿using RisingJoker.PlatformFactory;
-using System.Collections.Generic;
+using RisingJoker.BaseGameObjects;
+using RisingJoker.PlatformFactory;
 using System.Drawing;
+using System.Linq;
 
 namespace RisingJoker
 {
@@ -25,7 +26,7 @@ namespace RisingJoker
 
         public virtual void UpdateUniqueMechanicPoints(double currentGameTime)
         {
-            
+
         }
 
         public int GetScore()
@@ -37,27 +38,16 @@ namespace RisingJoker
             score += amount;
         }
 
-        public override void OnCollisionWith(GameObject other)
+        public override void OnCollisionWith(IGameObject other)
         {
             if (other.objectTag == "platform" && jumpCooldown <= 0)
             {
                 hasLanded = true;
             }
-            if (other.objectTag == "enemy")
+            if (new string[] { "enemy", "coin", "pBottom" }.Contains(other.objectTag))
             {
-                Enemy enemy = (Enemy)other;
-                ModifyScore(enemy.GetContactPenalty());
-            }
-            if (other.objectTag == "coin")
-            {
-                Coin coin = (Coin)other;
-                //ModifyScore(coin.GetValue());
-                //Delete the coin and remove it from GameObject list. No clue.
-            }
-            if(other.objectTag == "pBottom")
-            {
-                PlatformBottom bottom = (PlatformBottom)other;
-                ModifyScore(bottom.GetPassthroughPenalty());
+                IPoints pointsHaver = (IPoints)other;
+                ModifyScore(pointsHaver.Points);
             }
         }
 
