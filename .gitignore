@@ -2,7 +2,7 @@
 # This .gitignore file was automatically created by Microsoft(R) Visual Studio.
 ################################################################################
 
-/RisingJoker/obj/Release
-/RisingJoker/.vs/RisingJoker/FileContentIndex
-/RisingJokerServer/obj/Release
-/.vs
+**/RisingJoker/obj/Release
+**/RisingJoker/.vs/RisingJoker/FileContentIndex
+**/RisingJokerServer/obj/Release
+**/.vs
