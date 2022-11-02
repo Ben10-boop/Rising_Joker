@@ -413,7 +413,7 @@ namespace RisingJoker
 
             //initialising appropriate builder
             IPlatformsBuilder platformBuilder;
-            if (platformData.platformAmount == 1)
+            if (platformData.PlatformAmount == 1)
             {
                 platformBuilder =
                 new PlatformBuilder()
@@ -428,7 +428,7 @@ namespace RisingJoker
             else
             {
                 platformBuilder = 
-                    new PlatformArrayBuilder(platformData.platformAmount, platformData.nextPlatformOffset)
+                    new PlatformArrayBuilder(platformData.PlatformAmount, platformData.NextPlatformOffset)
                     .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
                     .SetSize(new Size(platformData.Width, platformData.Height))
                     .SetPosition(new Point(platformData.PositionX, yPosition))

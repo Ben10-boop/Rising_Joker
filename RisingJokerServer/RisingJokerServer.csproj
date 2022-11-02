@@ -55,6 +55,12 @@
     <Compile Include="JoinManager.cs" />
     <Compile Include="LiveGameSocket.cs" />
     <Compile Include="LobbySocket.cs" />
+    <Compile Include="PlatGenerationStrategy\IPlatGenerationStrategy.cs" />
+    <Compile Include="PlatGenerationStrategy\Lvl1ArrayStrategy.cs" />
+    <Compile Include="PlatGenerationStrategy\Lvl1PlatformStrategy.cs" />
+    <Compile Include="PlatGenerationStrategy\Lvl2ArrayStrategy.cs" />
+    <Compile Include="PlatGenerationStrategy\Lvl2PlatformStrategy.cs" />
+    <Compile Include="PlatGenerationStrategy\PlatGenerationContext.cs" />
     <Compile Include="PlayerPositionBroadcastSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -3,8 +3,8 @@
     internal class PlatformDto
     {
         public int Level { get; set; } = 1;
-        public int platformAmount { get; set; } = 1;
-        public int nextPlatformOffset { get; set; } = 0;
+        public int PlatformAmount { get; set; } = 1;
+        public int NextPlatformOffset { get; set; } = 0;
         public int Width { get; set; }
         public int Height { get; set; }
         public int PositionX { get; set; }
