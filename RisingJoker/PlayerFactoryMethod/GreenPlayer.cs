@@ -1,27 +1,28 @@
 ﻿using RisingJoker.BaseGameObjects;
+using RisingJoker.PointsObserver;
 using System.Drawing;
 
 namespace RisingJoker.PlayerFactoryMethod
 {
-    internal class GreenPlayer : Player
+    internal class GreenPlayer : Player, IPointsDispatcher
     {
         //Touching players gives points
         private bool TouchingPlayer = false;
         double NextPointGainTime = 0.2;
-        public GreenPlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color)
+        public GreenPlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, 8)
         {
 
         }
         public override void OnCollisionWith(IGameObject other)
         {
             base.OnCollisionWith(other);
-            if (other.objectTag == "player")
+            if (other.objectTag == "player" && other != this)
             {
                 TouchingPlayer = true;
             }
         }
 
-        public override void UpdateUniqueMechanicPoints(double currentGameTime)
+        protected override void Notify(double currentGameTime)
         {
             if (TouchingPlayer)
             {
@@ -29,7 +30,7 @@ namespace RisingJoker.PlayerFactoryMethod
                 if (currentGameTime >= NextPointGainTime)
                 {
                     NextPointGainTime = currentGameTime + 0.2;
-                    ModifyScore(8);
+                    Listeners.ForEach((listener) => listener.Update(Points, color.ToString()));
                 }
             }
         }

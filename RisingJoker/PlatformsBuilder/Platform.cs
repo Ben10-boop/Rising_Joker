@@ -75,9 +75,9 @@ namespace RisingJoker
             RemoveObject(sender as IMovableObject);
         }
 
-        public override bool IsInScreen()
+        public override bool IsObjectAlive()
         {
-            return objects.Any(o => o.IsInScreen()) || base.IsInScreen();
+            return objects.Any(o => o.IsObjectAlive()) || base.IsObjectAlive();
         }
     }
 }

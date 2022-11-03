@@ -1,16 +1,17 @@
 ﻿using RisingJoker.BaseGameObjects;
+using RisingJoker.PointsObserver;
 using System.Drawing;
 
 namespace RisingJoker.PlayerFactoryMethod
 {
-    internal class RedPlayer : Player
+    internal class RedPlayer : Player, IPointsDispatcher
     {
         //Touching enemies gives points
         private bool TouchingEnemy = false;
         double NextPointGainTime = 0.2;
-        public RedPlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color)
-        {
 
+        public RedPlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, 12)
+        {
         }
         public override void OnCollisionWith(IGameObject other)
         {
@@ -21,7 +22,7 @@ namespace RisingJoker.PlayerFactoryMethod
             }
         }
 
-        public override void UpdateUniqueMechanicPoints(double currentGameTime)
+        protected override void Notify(double currentGameTime)
         {
             if (TouchingEnemy)
             {
@@ -29,7 +30,7 @@ namespace RisingJoker.PlayerFactoryMethod
                 if (currentGameTime >= NextPointGainTime)
                 {
                     NextPointGainTime = currentGameTime + 0.2;
-                    ModifyScore(12);
+                    Listeners.ForEach((listener) => listener.Update(Points, color.ToString()));
                 }
             }
         }

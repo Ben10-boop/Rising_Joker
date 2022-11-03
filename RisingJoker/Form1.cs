@@ -1,9 +1,11 @@
 ﻿using Newtonsoft.Json;
 using RisingJoker.BaseGameObjects;
+using RisingJoker.CoinObject;
 using RisingJoker.DTOs;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformsBuilder;
 using RisingJoker.PlayerFactoryMethod;
+using RisingJoker.PointsObserver;
 using RisingJoker.Themes;
 using System;
 using System.Collections.Generic;
@@ -26,6 +28,7 @@ namespace RisingJoker
         private const int FALL_SPEED = 2;
         private Dictionary<PlatFactoryType, Coin> coinMap = new Dictionary<PlatFactoryType, Coin>();
         private Dictionary<PlatFactoryType, IEnemy> enemyMap = new Dictionary<PlatFactoryType, IEnemy>();
+        private Dictionary<Color, PointsCollector> pointsCollectorMap = new Dictionary<Color, PointsCollector>();
         private List<PlatformColorTheme> platformThemeList;
         public Form1()
         {
@@ -113,11 +116,15 @@ namespace RisingJoker
         {
             var ranNum = new Random().Next();
             currentTime += 0.02;
-            scoreBoard.Text = String.Format("Score: {0}\nTime: {1:n}", userPlayer.GetScore(), currentTime);
+            char[] trimChars = new char[] { '[', ']' };
+            scoreBoard.Text = String.Format("Score: \n {0}: {1}", userPlayer.color.Name, pointsCollectorMap[userPlayer.color].Points);
+            opponents.ForEach((opponent) =>
+            {
+                scoreBoard.Text += String.Format("\n {0}: {1}", opponent.color.Name, pointsCollectorMap[opponent.color].Points);
+            });
+            scoreBoard.Text += String.Format("Time: {0:n}", currentTime);
             if (currentTime >= nextSpawnTime && platformToSpawnData != null)
             {
-                if (userPlayer != null)
-                    userPlayer.ModifyScore(10);
                 nextSpawnTime += 1;
                 SpawnPlatform(platformToSpawnData, 0);
                 platformToSpawnData = null;
@@ -160,7 +167,7 @@ namespace RisingJoker
                         Console.WriteLine(obj.objectTag);
                     }
                 }
-                if (!obj.IsInScreen())
+                if (!obj.IsObjectAlive())
                 {
                     objectsToRemove.Add(obj);
                 }
@@ -391,6 +398,7 @@ namespace RisingJoker
             RedPlayerCreator redCreator = new RedPlayerCreator();
             GreenPlayerCreator greenCreator = new GreenPlayerCreator();
             BluePlayerCreator blueCreator = new BluePlayerCreator();
+            List<Player> createdPlayers = new List<Player>();
             switch (userColor)
             {
                 case PlayerColor.Red:
@@ -417,8 +425,16 @@ namespace RisingJoker
                     break;
 
             }
-
+            createdPlayers.Add(userPlayer);
             gameObjects.Add(userPlayer);
+            opponents.ForEach((opponent) => createdPlayers.Add(opponent));
+            createdPlayers.ForEach((player) =>
+            {
+                PointsCollector pointsCollector = new PointsCollector(player.color.ToString());
+                player.Subscribe(pointsCollector);
+                pointsCollectorMap.Add(player.color, pointsCollector);
+            });
+
         }
 
         //Method that spawns a platform with specified parameters (received from server)
@@ -434,8 +450,8 @@ namespace RisingJoker
             if (platformData.Level != previousLevel || !coinMap.ContainsKey(platFactoryType) || !enemyMap.ContainsKey(platFactoryType))
             {
 
-                coinMap[platFactoryType] = platFactory.CreateCoin(Math.Max(25 - 5 * platformData.Level, 5), (int)Math.Log(5 * Math.Pow(platformData.Level, 2)));
-                enemyMap[platFactoryType] = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(20 * Math.Pow(platformData.Level, 2)));
+                coinMap[platFactoryType] = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
+                enemyMap[platFactoryType] = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
                 previousLevel = platformData.Level;
             }
 
@@ -446,7 +462,7 @@ namespace RisingJoker
             IPlatformBuilder platformBuilder = new PlatformBuilder();
             bool shouldAddPlatformBottom = platformData.PlatformAmount == 1;
 
-            PlatformObjAddFacade facade = new PlatformObjAddFacade(gameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width);
+            PlatformObjAddFacade facade = new PlatformObjAddFacade(gameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width, pointsCollectorMap);
 
             for (int platformIndex = 0; platformIndex < platformData.PlatformAmount; platformIndex++)
             {

@@ -1,4 +1,5 @@
-﻿using RisingJoker.EnemyObject;
+﻿using RisingJoker.CoinObject;
+using RisingJoker.EnemyObject;
 using RisingJoker.PlatformsBuilder;
 using System.Drawing;
 
