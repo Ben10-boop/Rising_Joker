@@ -9,7 +9,7 @@ namespace RisingJoker.PlatformFactory
         public Coin CreateCoin(int coinSize, int baseCoinValue)
         {
             Point correctedPoint = new Point(0, -coinSize);
-            return new Coin(Color.DarkRed, new Size(coinSize, coinSize), correctedPoint, Math.Max(baseCoinValue - 10, 0));
+            return new Coin(Color.DarkGoldenrod, new Size(coinSize, coinSize), correctedPoint, Math.Max(baseCoinValue - 10, 0));
         }
         public IEnemy CreateEnemy(Size enemySize, int basePenalty)
         {

@@ -22,20 +22,18 @@ namespace RisingJoker
         {
         }
 
-        public (IPlatFactory, PlatFactoryType) PickPlatform(bool hasCoin, bool hasEnemy, PlatformColorTheme theme)
+        public (IPlatFactory, PlatFactoryType) PickPlatform(bool hasCoin, bool hasEnemy, PlatformColorTheme theme, int coinPos, int enemyPos)
         {
-            if (hasCoin && !hasEnemy)
+            bool hasBoth = hasCoin && hasEnemy;
+            if ((hasCoin && !hasEnemy) || (hasBoth && enemyPos - coinPos > 0))
             {
                 return (new GoldPlatform(), PlatFactoryType.Gold);
             }
-            else if (!hasCoin && hasEnemy)
+            else if ((!hasCoin && hasEnemy) || (hasBoth && enemyPos - coinPos <= 0))
             {
                 return (new ScaryPlatform(), PlatFactoryType.Scary);
             }
-            else
-            {
-                return (new RegularPlatform(theme), PlatFactoryType.Regular);
-            }
+            return (new RegularPlatform(theme), PlatFactoryType.Regular);
         }
     }
 }

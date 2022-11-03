@@ -429,7 +429,7 @@ namespace RisingJoker
             PlatformColorTheme platTheme = platformThemeList[(platformData.Level - 1) % 2];
             PlatformObjPickFacade platformObjPickFacade = new PlatformObjPickFacade();
 
-            var (platFactory, platFactoryType) = platformObjPickFacade.PickPlatform(platformData.HasCoin, platformData.HasEnemy, platTheme);
+            var (platFactory, platFactoryType) = platformObjPickFacade.PickPlatform(platformData.HasCoin, platformData.HasEnemy, platTheme, platformData.CoinPosX, platformData.EnemyPosX);
 
             if (platformData.Level != previousLevel || !coinMap.ContainsKey(platFactoryType) || !enemyMap.ContainsKey(platFactoryType))
             {
