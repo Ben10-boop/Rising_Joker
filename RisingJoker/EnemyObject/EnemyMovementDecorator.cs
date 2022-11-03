@@ -1,5 +1,6 @@
 ﻿using RisingJoker.BaseGameObjects;
 using RisingJoker.PlatformFactory;
+using RisingJoker.PointsObserver;
 using System;
 using System.Drawing;
 
@@ -58,9 +59,9 @@ namespace RisingJoker.EnemyObject
             return BaseEnemy.IsCollidingWith(other);
         }
 
-        public bool IsInScreen()
+        public bool IsObjectAlive()
         {
-            return BaseEnemy.IsInScreen();
+            return BaseEnemy.IsObjectAlive();
         }
 
         public abstract void Move();
@@ -88,6 +89,16 @@ namespace RisingJoker.EnemyObject
         public void Render()
         {
             BaseEnemy.Render();
+        }
+
+        public void Subscribe(IPointsListener listener)
+        {
+            BaseEnemy.Subscribe(listener);
+        }
+
+        public void Unsubscribe(IPointsListener listener)
+        {
+            BaseEnemy.Unsubscribe(listener);
         }
     }
 }

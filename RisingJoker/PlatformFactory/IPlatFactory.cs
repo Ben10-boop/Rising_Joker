@@ -1,4 +1,5 @@
-﻿using System.Drawing;
+﻿using RisingJoker.CoinObject;
+using System.Drawing;
 
 namespace RisingJoker.PlatformFactory
 {

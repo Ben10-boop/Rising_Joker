@@ -1,5 +1,5 @@
-﻿using RisingJoker.EnemyObject;
-using System;
+﻿using RisingJoker.CoinObject;
+using RisingJoker.EnemyObject;
 using System.Drawing;
 
 namespace RisingJoker.PlatformFactory
@@ -9,14 +9,14 @@ namespace RisingJoker.PlatformFactory
         public Coin CreateCoin(int coinSize, int baseCoinValue)
         {
             Point correctedPoint = new Point(0, -coinSize);
-            return new Coin(Color.DarkGoldenrod, new Size(coinSize, coinSize), correctedPoint, Math.Max(baseCoinValue - 10, 0));
+            return new ScaryCoin(new Size(coinSize, coinSize), correctedPoint, baseCoinValue);
         }
         public IEnemy CreateEnemy(Size enemySize, int basePenalty)
         {
             Point correctedPoint = new Point(0, -enemySize.Width);
 
             EnemyBuilder builder = new EnemyBuilder();
-            builder.SetBaseEnemy(new Enemy(Color.DarkRed, enemySize, correctedPoint, Math.Max(-10 + basePenalty, -10)));
+            builder.SetBaseEnemy(new ScaryEnemy(enemySize, correctedPoint, basePenalty));
             builder.AddHovering().AddWalking().AddTeleporting().GetEnemy();
             return builder.GetEnemy();
         }
@@ -24,7 +24,7 @@ namespace RisingJoker.PlatformFactory
         public PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int basePenalty)
         {
             Point correctedPoint = new Point(platformPosX + 20, 15);
-            return new PlatformBottom(new Size(platformWidth - 40, 10), correctedPoint, Color.DarkRed, Math.Min(-15 + basePenalty, -10));
+            return new ScaryPlatformBottom(new Size(platformWidth - 40, 10), correctedPoint, basePenalty);
         }
     }
 }

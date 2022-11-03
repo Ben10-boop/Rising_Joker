@@ -1,28 +1,24 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using RisingJoker.PointsObserver;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RisingJoker.PlayerFactoryMethod
 {
-    internal class BluePlayer : Player
+    internal class BluePlayer : Player, IPointsDispatcher
     {
         //Inreased passive point gain
 
         double NextPointGainTime = 1;
-        public BluePlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color)
+
+        public BluePlayer(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, 10)
         {
-            
         }
 
-        public override void UpdateUniqueMechanicPoints(double currentGameTime)
+        protected override void Notify(double currentGameTime)
         {
-            if(currentGameTime >= NextPointGainTime)
+            if (currentGameTime >= NextPointGainTime)
             {
-                NextPointGainTime += 1;
-                ModifyScore(10);
+                NextPointGainTime = currentGameTime + 1;
+                Listeners.ForEach((listener) => listener.Update(Points, color.ToString()));
             }
         }
     }

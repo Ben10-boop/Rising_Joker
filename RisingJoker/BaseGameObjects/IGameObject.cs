@@ -16,7 +16,7 @@ namespace RisingJoker.BaseGameObjects
         bool IsCollidingWith(IGameObject other);
         void OnCollisionWith(IGameObject other);
         void Render();
-        bool IsInScreen();
+        bool IsObjectAlive();
         void RemoveFromScreen();
     }
 }

@@ -1,4 +1,5 @@
-﻿using RisingJoker.EnemyObject;
+﻿using RisingJoker.CoinObject;
+using RisingJoker.EnemyObject;
 using System;
 using System.Drawing;
 
@@ -9,13 +10,14 @@ namespace RisingJoker.PlatformFactory
         public Coin CreateCoin(int coinSize, int baseCoinValue)
         {
             Point correctedPoint = new Point(0, -coinSize);
-            return new Coin(Color.Gold, new Size(coinSize, coinSize), correctedPoint, baseCoinValue);
+            return new GoldCoin(new Size(coinSize, coinSize), correctedPoint, baseCoinValue);
         }
+
         public IEnemy CreateEnemy(Size enemySize, int basePenalty)
         {
             Point correctedPoint = new Point(0, -enemySize.Width);
 
-            return new EnemyBuilder().SetBaseEnemy(new Enemy(Color.LightPink, enemySize, correctedPoint, Math.Min(10 + basePenalty, 0))).AddHovering().GetEnemy();
+            return new EnemyBuilder().SetBaseEnemy(new GoldEnemy(enemySize, correctedPoint, basePenalty)).AddHovering().GetEnemy();
         }
 
         public PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int basePenalty)

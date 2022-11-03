@@ -1,11 +1,11 @@
 using RisingJoker.BaseGameObjects;
-using RisingJoker.PlatformFactory;
+using RisingJoker.PointsObserver;
+using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 
 namespace RisingJoker
 {
-    public abstract class Player : MovableObject
+    public abstract class Player : MovableObject, IPointsDispatcher
     {
         public static string TAG = "player";
         const int HORIZONTAL_SPEED = 7;
@@ -14,28 +14,41 @@ namespace RisingJoker
         private double jumpCooldown = 0;
         private bool isJumping, isMovingLeft, isMovingRight = false;
         private bool hasLanded = true;
-        private int score = 0;
+        public int Points { get; private set; }
+        protected List<IPointsListener> Listeners = new List<IPointsListener>();
 
-        public Player(Size size, Point position, bool isVisible, Color color) : base(size, position, isVisible, color, TAG)
+        public Player(Size size, Point position, bool isVisible, Color color, int points) : base(size, position, isVisible, color, TAG)
         {
             LeftDirectionSpeed = -HORIZONTAL_SPEED;
             RightDirectionSpeed = HORIZONTAL_SPEED;
             UpDirectionSpeed = 0;
             DownDirectionSpeed = FALL_DOWN_SPEED;
+            Points = points;
         }
 
-        public virtual void UpdateUniqueMechanicPoints(double currentGameTime)
+        public void UpdateUniqueMechanicPoints(double currentGameTime)
+        {
+            if (isAlive)
+                Notify(currentGameTime);
+        }
+
+        protected virtual void Notify(double currentGameTime)
         {
 
         }
 
-        public int GetScore()
+        public void Subscribe(IPointsListener listener)
         {
-            return score;
+            if (Listeners.Contains(listener))
+                return;
+            Listeners.Add(listener);
         }
-        public void ModifyScore(int amount)
+
+        public void Unsubscribe(IPointsListener listener)
         {
-            score += amount;
+            if (!Listeners.Contains(listener))
+                return;
+            Listeners.Remove(listener);
         }
 
         public override void OnCollisionWith(IGameObject other)
@@ -43,11 +56,6 @@ namespace RisingJoker
             if (other.objectTag == "platform" && jumpCooldown <= 0)
             {
                 hasLanded = true;
-            }
-            if (new string[] { "enemy", "coin", "pBottom" }.Contains(other.objectTag))
-            {
-                IPoints pointsHaver = (IPoints)other;
-                ModifyScore(pointsHaver.Points);
             }
         }
 
@@ -152,6 +160,11 @@ namespace RisingJoker
             MoveDirection verticalDirection = UpDirectionSpeed < 0 ? MoveDirection.Up : MoveDirection.Down;
 
             position = new Point(position.X, position.Y + GetVerticalSpeed(verticalDirection));
+        }
+
+        public override void Render()
+        {
+            base.Render();
         }
     }
 }

@@ -12,8 +12,9 @@ namespace RisingJoker.BaseGameObjects
         public virtual Size size { get; set; }
         public virtual Point position { get; set; }
         protected virtual bool isVisible { get; set; }
-        protected virtual Color color { get; set; }
+        public virtual Color color { get; set; }
         public virtual string objectTag { get; set; }
+        public virtual bool isAlive { get; set; }
 
         public GameObject(Size size, Point position, bool isVisible, Color color, string objectTag)
         {
@@ -22,6 +23,7 @@ namespace RisingJoker.BaseGameObjects
             this.isVisible = isVisible;
             this.color = color;
             this.objectTag = objectTag;
+            isAlive = true;
         }
 
         public virtual void OnCollisionWith(IGameObject other)
@@ -83,9 +85,9 @@ namespace RisingJoker.BaseGameObjects
             GameObject.gameScreen = gameScreen;
         }
 
-        public virtual bool IsInScreen()
+        public virtual bool IsObjectAlive()
         {
-            return GetGameScreen().Bottom - GetGameScreen().Top > position.Y - size.Height;
+            return GetGameScreen().Bottom - GetGameScreen().Top > position.Y - size.Height && isAlive;
         }
 
         public virtual void RemoveFromScreen()
@@ -94,6 +96,7 @@ namespace RisingJoker.BaseGameObjects
             {
                 this.GetGameScreen().Controls.Remove(objectDisplay);
                 objectDisplay.Dispose();
+                isAlive = false;
             }
         }
     }
