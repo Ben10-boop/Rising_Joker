@@ -15,7 +15,7 @@ namespace RisingJoker.PlatformFactory
         {
             Point correctedPoint = new Point(0, -enemySize.Width);
 
-            return new EnemyBuilder().SetBaseEnemy(new Enemy(Color.Gold, enemySize, correctedPoint, Math.Min(10 + basePenalty, 0))).AddHovering().GetEnemy();
+            return new EnemyBuilder().SetBaseEnemy(new Enemy(Color.LightPink, enemySize, correctedPoint, Math.Min(10 + basePenalty, 0))).AddHovering().GetEnemy();
         }
 
         public PlatformBottom CreatePlatformBottom(int platformWidth, int platformPosX, int basePenalty)
