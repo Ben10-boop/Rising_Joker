@@ -58,9 +58,9 @@ namespace RisingJoker
             return this;
         }
 
-        public IPlatformBuilder AddObjToPlatform(IMovableObject obj, Label form, bool below = false)
+        public IPlatformBuilder AddObjToPlatform(IMovableObject obj, bool below = false)
         {
-            Point moveObjTo = GetItemPositionOnPlatform(obj, form, below);
+            Point moveObjTo = GetItemPositionOnPlatform(obj, below);
             obj.MoveTo(moveObjTo);
             objectsToAdd.Add(obj);
 
@@ -74,11 +74,10 @@ namespace RisingJoker
             obj.ParentXEnd = position.X + size.Width;
         }
 
-        private Point GetItemPositionOnPlatform(IMovableObject other, Label form, bool below)
+        private Point GetItemPositionOnPlatform(IMovableObject other, bool below)
         {
             int xPositionInBounds = Math.Max(Math.Min(position.X + other.position.X, position.X + size.Width - other.size.Width), position.X);
 
-            form.Text = string.Format("OTHER POSITION X: {0} \n position.X: {1} \n Min: {2}", position.X + other.position.X, position.X + size.Width - other.size.Width, Math.Min(position.X + other.position.X, position.X - size.Width));
             return new Point(xPositionInBounds, position.Y - (below ? -size.Height : other.size.Height));
         }
 

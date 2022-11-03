@@ -427,26 +427,9 @@ namespace RisingJoker
         {
             //initialising appropriate factory
             PlatformColorTheme platTheme = platformThemeList[(platformData.Level - 1) % 2];
-            IPlatFactory platFactory;
-            PlatFactoryType platFactoryType;
+            PlatformObjPickFacade platformObjPickFacade = new PlatformObjPickFacade();
 
-            if (platformData.HasCoin && !platformData.HasEnemy)
-            {
-                platFactory = new GoldPlatform();
-                platFactoryType = PlatFactoryType.Gold;
-            }
-            else if (!platformData.HasCoin && platformData.HasEnemy)
-            {
-                platFactory = new ScaryPlatform();
-                platFactoryType = PlatFactoryType.Scary;
-
-            }
-            else
-            {
-                platFactory = new RegularPlatform(platTheme);
-                platFactoryType = PlatFactoryType.Regular;
-
-            }
+            var (platFactory, platFactoryType) = platformObjPickFacade.PickPlatform(platformData.HasCoin, platformData.HasEnemy, platTheme);
 
             if (platformData.Level != previousLevel || !coinMap.ContainsKey(platFactoryType) || !enemyMap.ContainsKey(platFactoryType))
             {
@@ -463,6 +446,8 @@ namespace RisingJoker
             IPlatformBuilder platformBuilder = new PlatformBuilder();
             bool shouldAddPlatformBottom = platformData.PlatformAmount == 1;
 
+            PlatformObjAddFacade facade = new PlatformObjAddFacade(gameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width);
+
             for (int platformIndex = 0; platformIndex < platformData.PlatformAmount; platformIndex++)
             {
                 var xOffset = platformData.NextPlatformOffset * platformIndex;
@@ -474,27 +459,17 @@ namespace RisingJoker
 
                 if (shouldAddPlatformBottom)
                 {
-                    PlatformBottom bottom = platFactory.CreatePlatformBottom(platformData.Width, platformData.PositionX, -(int)Math.Log(10 * Math.Pow(platformData.Level, 2)));
-                    gameObjects.Add(bottom);
-                    platformBuilder.AddObjToPlatform(bottom, consoleBoard, true);
+                    facade.AddObject(platformData.PositionX + xOffset, PlatformObjectType.platformBottom);
                 }
 
                 //adding coin and enemy if needed
                 if (platformData.HasCoin && !addedOnce)
                 {
-                    Coin clonedCoin = coin.Clone();
-                    clonedCoin.MoveBy(new Point(platformData.CoinPosX, 0));
-                    platformBuilder.AddObjToPlatform(clonedCoin, consoleBoard);
-                    gameObjects.Add(clonedCoin);
+                    facade.AddObject(platformData.CoinPosX, PlatformObjectType.coin);
                 }
                 if (platformData.HasEnemy && !addedOnce)
                 {
-                    IEnemy clonedEnemy = enemy.Clone();
-
-                    clonedEnemy.MoveBy(new Point(platformData.EnemyPosX, 0));
-
-                    platformBuilder.AddObjToPlatform(clonedEnemy, consoleBoard);
-                    gameObjects.Add(clonedEnemy);
+                    facade.AddObject(platformData.EnemyPosX, PlatformObjectType.enemy);
                 }
                 platformBuilder.SetColor(platTheme.MainColor);
                 Platform platform = platformBuilder.GetPlatform();

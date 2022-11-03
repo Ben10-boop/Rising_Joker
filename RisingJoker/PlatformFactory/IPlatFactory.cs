@@ -8,7 +8,7 @@ namespace RisingJoker.PlatformFactory
         Regular,
         Scary
     }
-    internal interface IPlatFactory
+    public interface IPlatFactory
     {
         Coin CreateCoin(int coinSize, int baseCoinValue);
         IEnemy CreateEnemy(Size enemySize, int basePenalty);
