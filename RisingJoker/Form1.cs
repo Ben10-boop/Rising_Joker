@@ -48,7 +48,9 @@ namespace RisingJoker
         bool needToStartGame, GameRunning, isWaitingForResponse;
 
         //server stuff
+        //static readonly string serverAddress = "ws://25.44.67.63:6969";
         static readonly string serverAddress = "ws://127.0.0.1:6969";
+
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
         readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
@@ -69,8 +71,8 @@ namespace RisingJoker
         PlatformDto platformToSpawnData;
         PlayerPositionDto[] opponentPositions = new PlayerPositionDto[]
         {
-            new PlayerPositionDto { PositionX = 0, PositionY = 0 },
-            new PlayerPositionDto { PositionX = 0, PositionY = 0 }
+            new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.None.ToString() },
+            new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.None.ToString() }
         };
 
         /*
@@ -256,8 +258,8 @@ namespace RisingJoker
 
         private void UpdateOpponentsPositions()
         {
-            opponents[0].position = new Point(opponentPositions[0].PositionX, opponentPositions[0].PositionY);
-            opponents[1].position = new Point(opponentPositions[1].PositionX, opponentPositions[1].PositionY);
+            opponents[0].MoveTo(new Point(opponentPositions[0].PositionX, opponentPositions[0].PositionY));
+            opponents[1].MoveTo(new Point(opponentPositions[1].PositionX, opponentPositions[1].PositionY));
         }
 
         //Button clicking events (what happens when a certain button is clicked)
@@ -376,6 +378,8 @@ namespace RisingJoker
         private void PlayerPosBroadcastWs_OnMessage(object sender, MessageEventArgs e)
         {
             PlayerPositionDto[] playersPositions = JsonConvert.DeserializeObject<PlayerPositionDto[]>(e.Data);
+            Console.WriteLine(playersPositions[0].ToString());
+            Console.WriteLine(playersPositions[1].ToString());
             switch (userColor)
             {
                 case PlayerColor.Red:
@@ -427,7 +431,11 @@ namespace RisingJoker
             }
             createdPlayers.Add(userPlayer);
             gameObjects.Add(userPlayer);
-            opponents.ForEach((opponent) => createdPlayers.Add(opponent));
+            opponents.ForEach((opponent) => 
+            { 
+                createdPlayers.Add(opponent);
+                gameObjects.Add(opponent);
+            });
             createdPlayers.ForEach((player) =>
             {
                 PointsCollector pointsCollector = new PointsCollector(player.color.ToString());

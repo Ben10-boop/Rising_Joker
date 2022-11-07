@@ -12,9 +12,9 @@ namespace RisingJokerServer
 {
     public class PlayerPositionBroadcastSocket : WebSocketBehavior
     {
-        PlayerPositionDto BluePos;
-        PlayerPositionDto RedPos;
-        PlayerPositionDto GreenPos;
+        static PlayerPositionDto BluePos;
+        static PlayerPositionDto RedPos;
+        PlayerPositionDto GreenPos = new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.Green.ToString() };
         protected override void OnMessage(MessageEventArgs e)
         {
             PlayerPositionDto position = JsonConvert.DeserializeObject<PlayerPositionDto>(e.Data);
@@ -30,7 +30,7 @@ namespace RisingJokerServer
                     GreenPos = position;
                     break;
             }
-            if(BluePos != null && RedPos != null && GreenPos != null)
+            if (BluePos != null && RedPos != null /*&& GreenPos != null*/)
             {
                 PlayerPositionDto[] positions = new PlayerPositionDto[]
                 {
@@ -41,7 +41,7 @@ namespace RisingJokerServer
                 Sessions.Broadcast(JsonConvert.SerializeObject(positions));
                 BluePos = null;
                 RedPos = null;
-                GreenPos = null;
+                //GreenPos = null;
             }
         }
     }
