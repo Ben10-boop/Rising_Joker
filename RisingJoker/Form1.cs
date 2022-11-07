@@ -48,7 +48,7 @@ namespace RisingJoker
         bool needToStartGame, GameRunning, isWaitingForResponse;
 
         //server stuff
-        //static readonly string serverAddress = "ws://25.44.67.63:6969";
+        //static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
         static readonly string serverAddress = "ws://127.0.0.1:6969";
 
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
@@ -71,8 +71,8 @@ namespace RisingJoker
         PlatformDto platformToSpawnData;
         PlayerPositionDto[] opponentPositions = new PlayerPositionDto[]
         {
-            new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.None.ToString() },
-            new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.None.ToString() }
+            new PlayerPositionDto { PositionX = 0, PositionY = 50, PlayerColor = PlayerColor.None.ToString() },
+            new PlayerPositionDto { PositionX = 0, PositionY = 50, PlayerColor = PlayerColor.None.ToString() }
         };
 
         /*
@@ -378,8 +378,6 @@ namespace RisingJoker
         private void PlayerPosBroadcastWs_OnMessage(object sender, MessageEventArgs e)
         {
             PlayerPositionDto[] playersPositions = JsonConvert.DeserializeObject<PlayerPositionDto[]>(e.Data);
-            Console.WriteLine(playersPositions[0].ToString());
-            Console.WriteLine(playersPositions[1].ToString());
             switch (userColor)
             {
                 case PlayerColor.Red:
