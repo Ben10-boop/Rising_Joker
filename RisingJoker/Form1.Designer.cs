@@ -35,6 +35,7 @@
             this.blueSelectButton = new System.Windows.Forms.Button();
             this.redSelectButton = new System.Windows.Forms.Button();
             this.greenSelectButton = new System.Windows.Forms.Button();
+            this.undoColorButton = new System.Windows.Forms.Button();
             this.consoleBoard = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
             this.SuspendLayout();
@@ -114,6 +115,22 @@
             this.greenSelectButton.Text = "Play as Green";
             this.greenSelectButton.UseVisualStyleBackColor = true;
             this.greenSelectButton.Click += new System.EventHandler(this.OnGreenSelectButtonClick);
+            //
+            // resetButton
+            //
+            this.undoColorButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.undoColorButton.ForeColor = System.Drawing.Color.Red;
+            this.undoColorButton.Location = new System.Drawing.Point(17, 213);
+            this.undoColorButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
+            this.undoColorButton.Name = "undoSelectButton";
+            this.undoColorButton.Size = new System.Drawing.Size(201, 80);
+            this.undoColorButton.TabIndex = 12;
+            this.undoColorButton.TabStop = false;
+            this.undoColorButton.Tag = "menuButton";
+            this.undoColorButton.Text = "Undo Color";
+            this.undoColorButton.UseVisualStyleBackColor = true;
+            this.undoColorButton.Visible = false;
+            this.undoColorButton.Click += new System.EventHandler(this.OnUndoColorButtonClick);
             // 
             // consoleBoard
             // 
@@ -122,7 +139,7 @@
             this.consoleBoard.Location = new System.Drawing.Point(693, 173);
             this.consoleBoard.Name = "consoleBoard";
             this.consoleBoard.Size = new System.Drawing.Size(390, 492);
-            this.consoleBoard.TabIndex = 12;
+            this.consoleBoard.TabIndex = 13;
             this.consoleBoard.Tag = "menuText";
             this.consoleBoard.Text = "Time: 0";
             this.consoleBoard.TextAlign = System.Drawing.ContentAlignment.TopRight;
@@ -135,7 +152,7 @@
             this.startButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
             this.startButton.Name = "startButton";
             this.startButton.Size = new System.Drawing.Size(201, 40);
-            this.startButton.TabIndex = 13;
+            this.startButton.TabIndex = 14;
             this.startButton.TabStop = false;
             this.startButton.Tag = "menuButton";
             this.startButton.Text = "Start game!";
@@ -153,6 +170,7 @@
             this.Controls.Add(this.greenSelectButton);
             this.Controls.Add(this.redSelectButton);
             this.Controls.Add(this.blueSelectButton);
+            this.Controls.Add(this.undoColorButton);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.scoreBoard);
             this.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
@@ -176,6 +194,7 @@
         private System.Windows.Forms.Button greenSelectButton;
         private System.Windows.Forms.Label consoleBoard;
         private System.Windows.Forms.Button startButton;
+        private System.Windows.Forms.Button undoColorButton;
     }
 }
 

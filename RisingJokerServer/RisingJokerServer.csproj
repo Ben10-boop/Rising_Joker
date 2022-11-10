@@ -54,6 +54,10 @@
     <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="JoinManager.cs" />
     <Compile Include="LiveGameSocket.cs" />
+    <Compile Include="LobbyCommand\ICommand.cs" />
+    <Compile Include="LobbyCommand\Invoker.cs" />
+    <Compile Include="LobbyCommand\PlayerSelector.cs" />
+    <Compile Include="LobbyCommand\Receiver.cs" />
     <Compile Include="LobbySocket.cs" />
     <Compile Include="PlatGenerationStrategy\IPlatGenerationStrategy.cs" />
     <Compile Include="PlatGenerationStrategy\Lvl1ArrayStrategy.cs" />
