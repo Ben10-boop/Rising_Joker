@@ -15,7 +15,7 @@ using WebSocketSharp;
 
 namespace RisingJoker
 {
-    enum PlayerColor
+    public enum PlayerColor
     {
         Red = 0,
         Green = 1,
@@ -266,16 +266,49 @@ namespace RisingJoker
         private void OnRedSelectButtonClick(object sender, EventArgs e)
         {
             OnColorSelectClick(PlayerColor.Red);
+            ChangeButtonsAppearance(PlayerColor.Red);
         }
 
         private void OnGreenSelectButtonClick(object sender, EventArgs e)
         {
             OnColorSelectClick(PlayerColor.Green);
+            ChangeButtonsAppearance(PlayerColor.Green);
+
 
         }
         private void OnBlueSelectButtonClick(object sender, EventArgs e)
         {
             OnColorSelectClick(PlayerColor.Blue);
+            ChangeButtonsAppearance(PlayerColor.Blue);
+
+        }
+        private void OnUndoColorButtonClick(object sender, EventArgs e)
+        {
+            OnColorSelectClick(PlayerColor.None);
+            ChangeButtonsAppearance(PlayerColor.None);
+        }
+        private void ChangeButtonsAppearance(PlayerColor color)
+        {
+            string receivedColor = color.ToString();
+            switch (color)
+            {
+                case PlayerColor.Red:
+                case PlayerColor.Blue:
+                case PlayerColor.Green:
+                    redSelectButton.Visible = false;
+                    blueSelectButton.Visible = false;
+                    greenSelectButton.Visible = false;
+                    undoColorButton.Visible = true;
+                    undoColorButton.ForeColor = Color.FromName(receivedColor);
+                    break;
+                case PlayerColor.None:
+                    redSelectButton.Visible = true;
+                    blueSelectButton.Visible = true;
+                    greenSelectButton.Visible = true;
+                    undoColorButton.Visible = false;
+                    break;
+                default: break;
+            }
         }
 
         private void OnColorSelectClick(PlayerColor color)
@@ -285,15 +318,17 @@ namespace RisingJoker
                 return;
             }
 
-            if (userColor != PlayerColor.None)
+            if (color == PlayerColor.None)
             {
-                MenuMessages.Push($"You have already chosen to play as {userColor}");
+                MenuMessages.Push($"Undoing color selection");
+                lobbySocket.Send(JsonConvert.SerializeObject(new StringDto { Value = color.ToString() }));
+                userColor = PlayerColor.None;
                 return;
+            } else
+            {
+                MenuMessages.Push($"Attempting to play as {color}");
+                lobbySocket.Send(JsonConvert.SerializeObject(new StringDto { Value = color.ToString() }));
             }
-
-            MenuMessages.Push($"Attempting to play as {color}");
-
-            lobbySocket.Send(JsonConvert.SerializeObject(new StringDto { Value = color.ToString() }));
             isWaitingForResponse = true;
         }
 

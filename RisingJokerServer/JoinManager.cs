@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 public enum PlayerColor
 {
     Red = 0,
     Green = 1,
     Blue = 2,
+    None = 3
 }
 
 namespace RisingJokerServer
@@ -51,9 +54,23 @@ namespace RisingJokerServer
             }
         }
 
+        public bool RemovePlayerJoined(PlayerColor color)
+        {
+            lock (joinThreadLock)
+            {
+                if (colorsJoined.ContainsKey(color))
+                {
+                    colorsJoined.Remove(color);
+                    return true;
+                }
+
+                return false;
+            }
+        }
+
         public int GetPlayersJoined()
         {
-            return colorsJoined.Count;
+            return colorsJoined.Where(item => item.Key != PlayerColor.None && item.Value).Count();
         }
     }
 }

@@ -22,6 +22,7 @@ namespace RisingJokerServer
         {
             StringDto message = JsonConvert.DeserializeObject<StringDto>(e.Data);
             Console.WriteLine("-RunGame- Received message from client: " + message.Value);
+
             if (gameRunning)
             {
                 Send(JsonConvert.SerializeObject(new StringDto { Value = "Game has already started!" }));
