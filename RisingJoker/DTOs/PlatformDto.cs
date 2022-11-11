@@ -1,6 +1,6 @@
 ﻿namespace RisingJoker.DTOs
 {
-    internal class PlatformDto
+    public class PlatformDto
     {
         public int Level { get; set; } = 1;
         public int PlatformAmount { get; set; } = 1;
