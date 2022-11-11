@@ -49,7 +49,6 @@ namespace RisingJoker.RenderingAdapters
 
         public void BeforePhysics()
         {
-            Console.WriteLine("GAME");
             var ranNum = new Random().Next();
             CurrentTime += 0.02;
             char[] trimChars = new char[] { '[', ']' };
@@ -72,7 +71,6 @@ namespace RisingJoker.RenderingAdapters
 
         public void SpawnPlayer()
         {
-            Console.WriteLine("SPAWNING PLAYERS");
             RedPlayerCreator redCreator = new RedPlayerCreator();
             GreenPlayerCreator greenCreator = new GreenPlayerCreator();
             BluePlayerCreator blueCreator = new BluePlayerCreator();
@@ -115,14 +113,6 @@ namespace RisingJoker.RenderingAdapters
                 PointsCollector pointsCollector = new PointsCollector(player.color.ToString());
                 player.Subscribe(pointsCollector);
                 PointsCollectorMap.Add(player.color, pointsCollector);
-            });
-            GameObjects.ForEach(obj =>
-            {
-                if (obj is Player)
-                {
-                    Player playerObj = (Player)obj;
-                    Console.WriteLine(playerObj.color);
-                }
             });
         }
 
