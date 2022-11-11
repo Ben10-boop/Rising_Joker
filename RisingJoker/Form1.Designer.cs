@@ -46,7 +46,7 @@
             this.scoreBoard.Font = new System.Drawing.Font("Consolas", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.scoreBoard.Location = new System.Drawing.Point(858, 7);
             this.scoreBoard.Name = "scoreBoard";
-            this.scoreBoard.Size = new System.Drawing.Size(227, 65);
+            this.scoreBoard.Size = new System.Drawing.Size(227, 166);
             this.scoreBoard.TabIndex = 0;
             this.scoreBoard.Tag = "scoreText";
             this.scoreBoard.Text = "Time: 0";
@@ -115,14 +115,14 @@
             this.greenSelectButton.Text = "Play as Green";
             this.greenSelectButton.UseVisualStyleBackColor = true;
             this.greenSelectButton.Click += new System.EventHandler(this.OnGreenSelectButtonClick);
-            //
-            // resetButton
-            //
+            // 
+            // undoColorButton
+            // 
             this.undoColorButton.Font = new System.Drawing.Font("Consolas", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.undoColorButton.ForeColor = System.Drawing.Color.Red;
             this.undoColorButton.Location = new System.Drawing.Point(17, 213);
             this.undoColorButton.Margin = new System.Windows.Forms.Padding(3, 2, 3, 2);
-            this.undoColorButton.Name = "undoSelectButton";
+            this.undoColorButton.Name = "undoColorButton";
             this.undoColorButton.Size = new System.Drawing.Size(201, 80);
             this.undoColorButton.TabIndex = 12;
             this.undoColorButton.TabStop = false;
