@@ -1,6 +1,7 @@
 ﻿using Newtonsoft.Json;
 using RisingJokerServer.DTOs;
 using RisingJokerServer.PlatGenerationStrategy;
+using RisingJokerServer.PlatGenTemplateMethod;
 using System;
 using System.Threading.Tasks;
 using WebSocketSharp;
@@ -51,6 +52,61 @@ namespace RisingJokerServer
             await Task.Delay(1000);
             Sessions.Broadcast(JsonConvert.SerializeObject(new StringDto { Value = "Game Start!" }));
 
+            //USE ONE OR THE OTHER, NOT BOTH
+            //GeneratePlatWithStrat();
+            GeneratePlatWithTemplate();
+        }
+
+        private async void GeneratePlatWithTemplate()
+        {
+            PlatformGenerator platGenerator;
+            Random rand = new Random();
+
+            //level_1
+            for (int i = 0; i < 10; i++)
+            {
+                if (rand.Next(0, 10) < 7)
+                {
+                    platGenerator = new Lvl1PlatGenerator();
+                }
+                else
+                {
+                    platGenerator = new Lvl1ArrayGenerator();
+                }
+                PlatformDto platform = platGenerator.GeneratePlatform();
+
+                Sessions.Broadcast(JsonConvert.SerializeObject(platform));
+                Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                await Task.Delay(1000);
+            }
+
+            //level_2
+            for (int i = 0; i < 40; i++)
+            {
+                int rolledNum = rand.Next(0, 11);
+                if (rolledNum < 6)
+                {
+                    platGenerator = new Lvl2PlatGenerator();
+                }
+                else if (rolledNum < 9)
+                {
+                    platGenerator = new Lvl2ArrayGenerator();
+                }
+                else
+                {
+                    platGenerator = new Lvl2SpecialArrayGenerator();
+                }
+                PlatformDto platform = platGenerator.GeneratePlatform();
+                Console.WriteLine("Yes");
+
+                Sessions.Broadcast(JsonConvert.SerializeObject(platform));
+                Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                await Task.Delay(1000);
+            }
+        }
+
+        private async void GeneratePlatWithStrat()
+        {
             PlatGenerationContext platGenContext = new PlatGenerationContext();
             Random rand = new Random();
 

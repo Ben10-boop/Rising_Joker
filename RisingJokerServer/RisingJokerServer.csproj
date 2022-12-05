@@ -65,6 +65,12 @@
     <Compile Include="PlatGenerationStrategy\Lvl2ArrayStrategy.cs" />
     <Compile Include="PlatGenerationStrategy\Lvl2PlatformStrategy.cs" />
     <Compile Include="PlatGenerationStrategy\PlatGenerationContext.cs" />
+    <Compile Include="PlatGenTemplateMethod\Lvl1ArrayGenerator.cs" />
+    <Compile Include="PlatGenTemplateMethod\Lvl1PlatGenerator.cs" />
+    <Compile Include="PlatGenTemplateMethod\Lvl2ArrayGenerator.cs" />
+    <Compile Include="PlatGenTemplateMethod\Lvl2PlatGenerator.cs" />
+    <Compile Include="PlatGenTemplateMethod\Lvl2SpecialArrayGenerator.cs" />
+    <Compile Include="PlatGenTemplateMethod\PlatformGenerator.cs" />
     <Compile Include="PlayerPositionBroadcastSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
