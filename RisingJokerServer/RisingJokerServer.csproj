@@ -52,6 +52,13 @@
     <Compile Include="DTOs\PlatformDto.cs" />
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
+    <Compile Include="Iterator\IIterableCollection.cs" />
+    <Compile Include="Iterator\IIterator.cs" />
+    <Compile Include="Iterator\IterableLinkedList.cs" />
+    <Compile Include="Iterator\IterableList.cs" />
+    <Compile Include="Iterator\LinkedListIterator.cs" />
+    <Compile Include="Iterator\ListIterator.cs" />
+    <Compile Include="Iterator\ListIteratorReverse.cs" />
     <Compile Include="JoinManager.cs" />
     <Compile Include="LiveGameSocket.cs" />
     <Compile Include="LobbyCommand\ICommand.cs" />

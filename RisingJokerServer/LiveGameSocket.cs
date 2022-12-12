@@ -1,8 +1,11 @@
 ﻿using Newtonsoft.Json;
 using RisingJokerServer.DTOs;
+using RisingJokerServer.Iterator;
 using RisingJokerServer.PlatGenerationStrategy;
 using RisingJokerServer.PlatGenTemplateMethod;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using WebSocketSharp;
 using WebSocketSharp.Server;
@@ -13,7 +16,39 @@ namespace RisingJokerServer
     //handles running the game
     public class LiveGameSocket : WebSocketBehavior
     {
-        private bool gameRunning = false;
+        private static bool gameRunning = false;
+        public static bool useReverseIterator = false;
+        private static IIterableCollection generationTimes = new IterableList();
+        private Stopwatch watch = new Stopwatch();
+
+        public static bool GetGameRunning()
+        {
+            return gameRunning;
+        }
+
+        /// <summary>
+        /// Overrides the current generationTimes collection with the given one. Can be any IIterableCollection
+        /// </summary>
+        /// <param name="collection"></param>
+        internal static void OverrideGenTimes(IIterableCollection collection)
+        {
+            generationTimes = collection;
+        }
+        public static void PrintGenerationTimerResults()
+        {
+            IIterator iterator;
+            if (useReverseIterator) 
+                iterator = (generationTimes as IterableList).CreateReverseIterator();
+            else
+                iterator = generationTimes.CreateIterator();
+
+            int i = 0;
+            while (iterator.HasMore())
+            {
+                Console.WriteLine($"Platform {i} generated in {iterator.GetNext()} miliseconds");
+                i++;
+            }
+        }
 
         //AMOUNT OF PLAYERS REQUIRED TO LAUNCH THE GAME
         private int requiredPlayerCount = 1;
@@ -84,20 +119,24 @@ namespace RisingJokerServer
             for (int i = 0; i < 40; i++)
             {
                 int rolledNum = rand.Next(0, 11);
-                if (rolledNum < 6)
+                if (rolledNum < 1) // <- 6
                 {
                     platGenerator = new Lvl2PlatGenerator();
                 }
-                else if (rolledNum < 9)
+                else if (rolledNum < 2) // <- 9
                 {
                     platGenerator = new Lvl2ArrayGenerator();
                 }
                 else
                 {
+                    watch.Start();
                     platGenerator = new Lvl2SpecialArrayGenerator();
+                    watch.Stop();
+                    generationTimes.Add(watch.ElapsedMilliseconds);
+                    watch.Restart();
+
                 }
                 PlatformDto platform = platGenerator.GeneratePlatform();
-                Console.WriteLine("Yes");
 
                 Sessions.Broadcast(JsonConvert.SerializeObject(platform));
                 Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
