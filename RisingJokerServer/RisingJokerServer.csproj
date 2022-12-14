@@ -78,6 +78,11 @@
     <Compile Include="PlatGenTemplateMethod\Lvl2PlatGenerator.cs" />
     <Compile Include="PlatGenTemplateMethod\Lvl2SpecialArrayGenerator.cs" />
     <Compile Include="PlatGenTemplateMethod\PlatformGenerator.cs" />
+    <Compile Include="PlatormVisitor\IVisitable.cs" />
+    <Compile Include="PlatormVisitor\IVisitor.cs" />
+    <Compile Include="PlatormVisitor\VisitorExtended.cs" />
+    <Compile Include="PlatormVisitor\VisitorShort.cs" />
+    <Compile Include="PlatormVisitor\VisitorStandard.cs" />
     <Compile Include="PlayerPositionBroadcastSocket.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

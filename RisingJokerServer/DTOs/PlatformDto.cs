@@ -1,6 +1,8 @@
-﻿namespace RisingJokerServer.DTOs
+﻿using RisingJokerServer.PlatormVisitor;
+
+namespace RisingJokerServer.DTOs
 {
-    internal class PlatformDto
+    internal class PlatformDto : IVisitable
     {
         public int Level { get; set; } = 1;
         public int PlatformAmount { get; set; } = 1;
@@ -12,6 +14,12 @@
         public bool HasEnemy { get; set; } = false;
         public int CoinPosX { get; set; } = 0;
         public int EnemyPosX { get; set; } = 0;
+
+        public void Accept(IVisitor visitor)
+        {
+            visitor.visitPlatform(this);
+        }
+
         public override string ToString()
         {
             return "W: " + Width + "; H: " + Height + "; X: " + PositionX + " Has Coin: " + HasCoin.ToString() + " Has Enemy: " + HasEnemy.ToString();

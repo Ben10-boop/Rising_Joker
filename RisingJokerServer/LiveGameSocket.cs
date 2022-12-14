@@ -3,6 +3,7 @@ using RisingJokerServer.DTOs;
 using RisingJokerServer.Iterator;
 using RisingJokerServer.PlatGenerationStrategy;
 using RisingJokerServer.PlatGenTemplateMethod;
+using RisingJokerServer.PlatormVisitor;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -96,6 +97,7 @@ namespace RisingJokerServer
         {
             PlatformGenerator platGenerator;
             Random rand = new Random();
+            IVisitor platVisitor = new VisitorShort();
 
             //level_1
             for (int i = 0; i < 10; i++)
@@ -111,7 +113,8 @@ namespace RisingJokerServer
                 PlatformDto platform = platGenerator.GeneratePlatform();
 
                 Sessions.Broadcast(JsonConvert.SerializeObject(platform));
-                Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                //Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                Console.Write("-RunGame- Spawn "); platVisitor.visitPlatform(platform);
                 await Task.Delay(1000);
             }
 
@@ -119,11 +122,11 @@ namespace RisingJokerServer
             for (int i = 0; i < 40; i++)
             {
                 int rolledNum = rand.Next(0, 11);
-                if (rolledNum < 1) // <- 6
+                if (rolledNum < 6) // <- 6
                 {
                     platGenerator = new Lvl2PlatGenerator();
                 }
-                else if (rolledNum < 2) // <- 9
+                else if (rolledNum < 9) // <- 9
                 {
                     platGenerator = new Lvl2ArrayGenerator();
                 }
@@ -139,7 +142,8 @@ namespace RisingJokerServer
                 PlatformDto platform = platGenerator.GeneratePlatform();
 
                 Sessions.Broadcast(JsonConvert.SerializeObject(platform));
-                Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                //Console.WriteLine("-RunGame- Spawn platform:" + platform.ToString());
+                Console.Write("-RunGame- Spawn "); platVisitor.visitPlatform(platform);
                 await Task.Delay(1000);
             }
         }
