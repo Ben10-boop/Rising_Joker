@@ -3,7 +3,6 @@ using RisingJoker.CoinObject;
 using RisingJoker.DTOs;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformsBuilder;
-using RisingJoker.PlayerFactoryMethod;
 using RisingJoker.PointsObserver;
 using System;
 using System.Collections.Generic;
@@ -52,7 +51,9 @@ namespace RisingJoker.RenderingAdapters
             var ranNum = new Random().Next();
             CurrentTime += 0.02;
             char[] trimChars = new char[] { '[', ']' };
-            ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.info.color.Name, PointsCollectorMap[UserPlayer.info.color].Points);
+            //ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.info.color.Name, PointsCollectorMap[UserPlayer.info.color].Points);
+            ScoreBoard.Text = String.Format("Game objects: \n {0}", GameObjects.Count);
+
             Opponents.ForEach((opponent) =>
             {
                 ScoreBoard.Text += String.Format("\n {0}: {1}", opponent.info.color.Name, PointsCollectorMap[opponent.info.color].Points);
@@ -71,35 +72,44 @@ namespace RisingJoker.RenderingAdapters
 
         public void SpawnPlayer()
         {
-            RedPlayerCreator redCreator = new RedPlayerCreator();
-            GreenPlayerCreator greenCreator = new GreenPlayerCreator();
-            BluePlayerCreator blueCreator = new BluePlayerCreator();
-            switch (UserColor)
+            //RedPlayerCreator redCreator = new RedPlayerCreator();
+            //GreenPlayerCreator greenCreator = new GreenPlayerCreator();
+            //BluePlayerCreator blueCreator = new BluePlayerCreator();
+            //switch (UserColor)
+            //{
+            //    case PlayerColor.Red:
+            //        UserPlayer = redCreator.CreatePlayer();
+
+            //        Opponents.Add(greenCreator.CreatePlayer());
+            //        Opponents.Add(blueCreator.CreatePlayer());
+            //        break;
+            //    case PlayerColor.Blue:
+            //        UserPlayer = blueCreator.CreatePlayer();
+
+            //        Opponents.Add(redCreator.CreatePlayer());
+            //        Opponents.Add(greenCreator.CreatePlayer());
+            //        break;
+            //    case PlayerColor.Green:
+            //        UserPlayer = greenCreator.CreatePlayer();
+
+            //        Opponents.Add(redCreator.CreatePlayer());
+            //        Opponents.Add(blueCreator.CreatePlayer());
+            //        break;
+            //    default:
+            //        RedPlayerCreator spectatorCreator = new RedPlayerCreator();
+            //        UserPlayer = spectatorCreator.CreatePlayer();
+            //        break;
+            //}
+
+            BasePlayerHandler playerHandler = new RedPlayerHandler();
+            playerHandler.setNextHandler(new GreenPlayerHandler()).setNextHandler(new BluePlayerHandler()).setNextHandler(new SpectatorPlayerHandler());
+            Console.WriteLine(new Size(25, 25).ToString());
+            UserPlayer = playerHandler.handle(UserColor, UserPlayer, Opponents);
+            if (UserPlayer != null)
             {
-                case PlayerColor.Red:
-                    UserPlayer = redCreator.CreatePlayer();
-
-                    Opponents.Add(greenCreator.CreatePlayer());
-                    Opponents.Add(blueCreator.CreatePlayer());
-                    break;
-                case PlayerColor.Blue:
-                    UserPlayer = blueCreator.CreatePlayer();
-
-                    Opponents.Add(redCreator.CreatePlayer());
-                    Opponents.Add(greenCreator.CreatePlayer());
-                    break;
-                case PlayerColor.Green:
-                    UserPlayer = greenCreator.CreatePlayer();
-
-                    Opponents.Add(redCreator.CreatePlayer());
-                    Opponents.Add(blueCreator.CreatePlayer());
-                    break;
-                default:
-                    RedPlayerCreator spectatorCreator = new RedPlayerCreator();
-                    UserPlayer = spectatorCreator.CreatePlayer();
-                    break;
-
+                Console.WriteLine(UserPlayer.info.color);
             }
+
             List<Player> createdPlayers = new List<Player>();
             createdPlayers.Add(UserPlayer);
             GameObjects.Add(UserPlayer);
@@ -110,6 +120,8 @@ namespace RisingJoker.RenderingAdapters
             });
             createdPlayers.ForEach((player) =>
             {
+                if (player == null)
+                    return;
                 PointsCollector pointsCollector = new PointsCollector(player.info.color.ToString());
                 player.Subscribe(pointsCollector);
                 PointsCollectorMap.Add(player.info.color, pointsCollector);
@@ -173,24 +185,27 @@ namespace RisingJoker.RenderingAdapters
 
             var (platFactory, platFactoryType) = platformObjPickFacade.PickPlatform(platformData.HasCoin, platformData.HasEnemy, platTheme, platformData.CoinPosX, platformData.EnemyPosX);
 
-            if (platformData.Level != PreviousLevel || !CoinMap.ContainsKey(platFactoryType) || !EnemyMap.ContainsKey(platFactoryType))
-            {
-                CoinMap[platFactoryType] = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
-                EnemyMap[platFactoryType] = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
-                PreviousLevel = platformData.Level;
-            }
+            //if (platformData.Level != PreviousLevel || !CoinMap.ContainsKey(platFactoryType) || !EnemyMap.ContainsKey(platFactoryType))
+            //{
+            //    CoinMap[platFactoryType] = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
+            //    EnemyMap[platFactoryType] = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
+            //    PreviousLevel = platformData.Level;
+            //}
 
 
-            IEnemy enemy = EnemyMap[platFactoryType];
-            Coin coin = CoinMap[platFactoryType];
+            //IEnemy enemy = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
+            //Coin coin = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
 
             IPlatformBuilder platformBuilder = new PlatformBuilder();
             bool shouldAddPlatformBottom = platformData.PlatformAmount == 1;
 
-            PlatformObjAddFacade facade = new PlatformObjAddFacade(GameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width, PointsCollectorMap);
+            //PlatformObjAddFacade facade = new PlatformObjAddFacade(GameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width, PointsCollectorMap);
 
             for (int platformIndex = 0; platformIndex < platformData.PlatformAmount; platformIndex++)
             {
+                IEnemy enemy = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
+                Coin coin = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
+                PlatformObjAddFacade facade = new PlatformObjAddFacade(GameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width, PointsCollectorMap);
                 var xOffset = platformData.NextPlatformOffset * platformIndex;
                 platformBuilder
                 .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)

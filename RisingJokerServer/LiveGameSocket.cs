@@ -118,7 +118,7 @@ namespace RisingJokerServer
             }
 
             //level_2
-            for (int i = 0; i < 40; i++)
+            for (int i = 0; i < 1000; i++)
             {
                 //int rolledNum = rand.Next(0, 11);
                 int rolledNum = 7;

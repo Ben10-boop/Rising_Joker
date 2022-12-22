@@ -2,6 +2,7 @@
 using RisingJoker.EnemyObject;
 using RisingJoker.GameObjectInfoCreation;
 using RisingJoker.PlatformsBuilder;
+using System;
 using System.Drawing;
 
 namespace RisingJoker.PlatformFactory
@@ -18,6 +19,7 @@ namespace RisingJoker.PlatformFactory
         public Coin CreateCoin(int coinSize, int coinValue)
         {
             Point correctedPoint = new Point(0, -coinSize);
+            Console.WriteLine("TESTING");
             return new Coin(GameObjectInfoFactory.GetGameObjectInfo(new Size(coinSize, coinSize), Theme.CoinColor, Coin.TAG), correctedPoint, coinValue);
         }
         public IEnemy CreateEnemy(Size enemySize, int penalty)

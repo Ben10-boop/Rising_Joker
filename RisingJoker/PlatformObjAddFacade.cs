@@ -52,18 +52,18 @@ namespace RisingJoker
 
                     break;
                 case (PlatformObjectType.coin):
-                    Coin clonedCoin = coin.Clone();
-                    clonedCoin.MoveBy(new Point(moveBy, 0));
-                    platformBuilder.AddObjToPlatform(clonedCoin);
-                    gameObjects.Add(clonedCoin);
-                    subscribe(clonedCoin);
+                    //Coin clonedCoin = coin.Clone();
+                    coin.MoveBy(new Point(moveBy, 0));
+                    platformBuilder.AddObjToPlatform(coin);
+                    gameObjects.Add(coin);
+                    subscribe(coin);
                     break;
                 case (PlatformObjectType.enemy):
-                    IEnemy clonedEnemy = enemy.Clone();
-                    clonedEnemy.MoveBy(new Point(moveBy, 0));
-                    platformBuilder.AddObjToPlatform(clonedEnemy);
-                    gameObjects.Add(clonedEnemy);
-                    subscribe(clonedEnemy);
+                    //IEnemy clonedEnemy = enemy.Clone();
+                    enemy.MoveBy(new Point(moveBy, 0));
+                    platformBuilder.AddObjToPlatform(enemy);
+                    gameObjects.Add(enemy);
+                    subscribe(enemy);
                     break;
                 default:
                     throw new Exception();

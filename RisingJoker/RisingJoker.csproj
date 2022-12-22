@@ -82,6 +82,9 @@
     <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="EnemyObject\EnemyBuilder.cs" />
     <Compile Include="GameObjectInfoCreation\GameObjectInfoFactory.cs" />
+    <Compile Include="RenderingAdapters\BasePlayerHandler.cs" />
+    <Compile Include="RenderingAdapters\SpectatorPlayerHandler.cs" />
+    <Compile Include="RenderingAdapters\IPlayerHandler.cs" />
     <Compile Include="RenderingAdapters\IRenderer.cs" />
     <Compile Include="RenderingAdapters\Menu.cs" />
     <Compile Include="Object\GameObject.cs" />
@@ -124,6 +127,9 @@
     <Compile Include="PointsObserver\IPointsListener.cs" />
     <Compile Include="PointsObserver\PointsCollector.cs" />
     <Compile Include="RenderingAdapters\MenuRenderer.cs" />
+    <Compile Include="RenderingAdapters\GreenPlayerHandler.cs" />
+    <Compile Include="RenderingAdapters\BluePlayerHandler.cs" />
+    <Compile Include="RenderingAdapters\RedPlayerHandler.cs" />
     <Compile Include="RenderingAdapters\RunningGame.cs" />
     <Compile Include="RenderingAdapters\RunningGameRenderer.cs" />
     <Compile Include="Themes\PlatformColorTheme.cs" />

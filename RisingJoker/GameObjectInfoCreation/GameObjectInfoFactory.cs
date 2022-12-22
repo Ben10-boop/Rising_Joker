@@ -6,16 +6,17 @@ namespace RisingJoker.GameObjectInfoCreation
 {
     public static class GameObjectInfoFactory
     {
-        private static Dictionary<(Size size, Color color, string objectTag), GameObjectInfo> gameObjectInfoMap = new Dictionary<(Size size, Color color, string objectTag), GameObjectInfo>();
+        private static Dictionary<string, GameObjectInfo> gameObjectInfoMap = new Dictionary<string, GameObjectInfo>();
 
         public static GameObjectInfo GetGameObjectInfo(Size size, Color color, string objectTag)
         {
-            GameObjectInfo gameObjectInfo;
-            gameObjectInfoMap.TryGetValue((size, color, objectTag), out gameObjectInfo);
+            GameObjectInfo gameObjectInfo = null;
+            gameObjectInfoMap.TryGetValue(size.ToString() + color.ToString() + objectTag, out gameObjectInfo);
             if (gameObjectInfo == null)
             {
+                //    Console.WriteLine("ADDING");
                 gameObjectInfo = new GameObjectInfo(size, color, objectTag);
-                gameObjectInfoMap.Add((size, color, objectTag), gameObjectInfo);
+                gameObjectInfoMap.Add(size.ToString() + color.ToString() + objectTag, gameObjectInfo);
             }
 
             return gameObjectInfo;
