@@ -5,6 +5,7 @@ using RisingJoker.Mediator;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformsBuilder;
 using RisingJoker.PointsObserver;
+using RisingJoker.StatefulMascot;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -108,6 +109,11 @@ namespace RisingJoker.RenderingAdapters
             playerHandler.setNextHandler(new GreenPlayerHandler()).setNextHandler(new BluePlayerHandler()).setNextHandler(new SpectatorPlayerHandler());
             Console.WriteLine(new Size(25, 25).ToString());
             UserPlayer = playerHandler.handle(UserColor, UserPlayer, Opponents);
+            if (UserPlayer != null)
+            {
+                var Mascot = new Mascot(new Size(25, 25), new Point(0, 0), Color.Bisque, UserPlayer);
+                GameObjects.Add(Mascot);
+            }
 
             List<Player> createdPlayers = new List<Player>();
             createdPlayers.Add(UserPlayer);

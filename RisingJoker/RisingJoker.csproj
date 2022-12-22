@@ -134,6 +134,12 @@
     <Compile Include="RenderingAdapters\RedPlayerHandler.cs" />
     <Compile Include="RenderingAdapters\RunningGame.cs" />
     <Compile Include="RenderingAdapters\RunningGameRenderer.cs" />
+    <Compile Include="StatefulMascot\FastTrollingMascotState.cs" />
+    <Compile Include="StatefulMascot\FollowingMascotState.cs" />
+    <Compile Include="StatefulMascot\IdleMascotState.cs" />
+    <Compile Include="StatefulMascot\MascotState.cs" />
+    <Compile Include="StatefulMascot\Mascot.cs" />
+    <Compile Include="StatefulMascot\TrollingMascotState.cs" />
     <Compile Include="Themes\PlatformColorTheme.cs" />
     <Compile Include="Player.cs" />
     <Compile Include="PlayerFactoryMethod\BluePlayer.cs" />

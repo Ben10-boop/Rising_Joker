@@ -11,9 +11,10 @@ namespace RisingJoker
         const int HORIZONTAL_SPEED = 7;
         const int FALL_DOWN_SPEED = 10;
         const int JUMP_SPEED = -FALL_DOWN_SPEED - 20;
-        private double jumpCooldown = 0;
-        private bool isJumping, isMovingLeft, isMovingRight = false;
-        private bool hasLanded = true;
+        public double jumpCooldown = 0;
+        private bool isMovingLeft, isMovingRight = false;
+        public bool hasLanded = true;
+        public bool isJumping = false;
         public int Points { get; set; }
         protected List<IPointsListener> Listeners = new List<IPointsListener>();
 
@@ -144,7 +145,6 @@ namespace RisingJoker
             if (jumpCooldown > 0)
             {
                 jumpCooldown -= 2.0 / 20;
-                ChangeColor(Color.IndianRed);
             }
             if (jumpCooldown < 0)
             {
@@ -160,7 +160,6 @@ namespace RisingJoker
             }
             if (jumpCooldown <= 0 && UpDirectionSpeed > -10 && isJumping && hasLanded)
             {
-                ChangeColor(Color.Brown);
                 jumpCooldown = 2.0;
                 UpDirectionSpeed = JUMP_SPEED;
                 hasLanded = false;

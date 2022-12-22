@@ -58,13 +58,15 @@ namespace RisingJoker.BaseGameObjects
 
         public virtual void ChangeColor(Color color)
         {
-            this.objectDisplay.BackColor = color;
+            info.color = color;
         }
 
         private void CreateObject()
         {
             this.objectDisplay = new PictureBox();
             this.GetGameScreen().Controls.Add(objectDisplay);
+            objectDisplay.BringToFront();
+
         }
 
         public virtual void Render()
@@ -72,11 +74,19 @@ namespace RisingJoker.BaseGameObjects
             if (objectDisplay == null)
                 CreateObject();
 
-            objectDisplay.BackColor = info.color;
-            objectDisplay.Size = info.size;
-            objectDisplay.Location = position;
-            objectDisplay.Visible = isVisible;
-            objectDisplay.Tag = info.objectTag;
+            if (!objectDisplay.BackColor.Equals(info.color))
+                objectDisplay.BackColor = info.color;
+
+            if (!objectDisplay.Size.Equals(info.size))
+                objectDisplay.Size = info.size;
+
+            if (!objectDisplay.Location.Equals(position))
+            {
+                objectDisplay.Location = position;
+            }
+
+            if (objectDisplay.Visible != isVisible)
+                objectDisplay.Visible = isVisible;
         }
 
         protected virtual void OnDestruction(EventArgs e)

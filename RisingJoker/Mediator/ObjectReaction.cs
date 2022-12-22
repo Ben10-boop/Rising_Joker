@@ -44,14 +44,12 @@ namespace RisingJoker.Mediator
                     Rectangle platformBounds = platform.GetBounds();
                     if (!isFalling)
                     {
-                        platform.ChangeColor(Color.BlueViolet);
                         return;
                     }
                     int threshold = 15;
                     bool comingFromTop = objBounds.Bottom >= (platformBounds.Top - 4) && objBounds.Top < platformBounds.Top && objBounds.Bottom - (platformBounds.Top - 4) <= threshold;
                     if (comingFromTop)
                     {
-                        platform.ChangeColor(Color.Red);
                         player.MoveBy(new Point(0, platformBounds.Top - objBounds.Bottom - 7));
                     }
                 }
