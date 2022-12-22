@@ -9,20 +9,25 @@ namespace RisingJoker.BaseGameObjects
         protected virtual PictureBox objectDisplay { get; set; }
         public virtual event EventHandler ObjectDestruction;
         public static Form gameScreen;
-        public virtual Size size { get; set; }
-        public virtual Point position { get; set; }
+        public virtual IGameObjectInfo info { get; set; }
         protected virtual bool isVisible { get; set; }
-        public virtual Color color { get; set; }
-        public virtual string objectTag { get; set; }
+        public virtual Point position { get; set; }
+
         public virtual bool isAlive { get; set; }
 
         public GameObject(Size size, Point position, bool isVisible, Color color, string objectTag)
         {
-            this.size = size;
-            this.position = position;
             this.isVisible = isVisible;
-            this.color = color;
-            this.objectTag = objectTag;
+            this.position = position;
+            info = new GameObjectInfo(size, color, objectTag);
+            isAlive = true;
+        }
+        public GameObject(IGameObjectInfo info, Point position, bool isVisible)
+        {
+            this.info = info;
+            this.position = position;
+
+            this.isVisible = isVisible;
             isAlive = true;
         }
 
@@ -60,11 +65,11 @@ namespace RisingJoker.BaseGameObjects
             if (objectDisplay == null)
                 CreateObject();
 
-            objectDisplay.BackColor = color;
-            objectDisplay.Size = size;
+            objectDisplay.BackColor = info.color;
+            objectDisplay.Size = info.size;
             objectDisplay.Location = position;
             objectDisplay.Visible = isVisible;
-            objectDisplay.Tag = objectTag;
+            objectDisplay.Tag = info.objectTag;
         }
 
         protected virtual void OnDestruction(EventArgs e)
@@ -87,7 +92,7 @@ namespace RisingJoker.BaseGameObjects
 
         public virtual bool IsObjectAlive()
         {
-            return GetGameScreen().Bottom - GetGameScreen().Top > position.Y - size.Height && isAlive;
+            return GetGameScreen().Bottom - GetGameScreen().Top > position.Y - info.size.Height && isAlive;
         }
 
         public virtual void RemoveFromScreen()

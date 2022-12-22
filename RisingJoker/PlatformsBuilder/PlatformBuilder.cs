@@ -3,7 +3,6 @@ using RisingJoker.PlatformsBuilder;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Forms;
 
 namespace RisingJoker
 {
@@ -76,9 +75,9 @@ namespace RisingJoker
 
         private Point GetItemPositionOnPlatform(IMovableObject other, bool below)
         {
-            int xPositionInBounds = Math.Max(Math.Min(position.X + other.position.X, position.X + size.Width - other.size.Width), position.X);
+            int xPositionInBounds = Math.Max(Math.Min(position.X + other.position.X, position.X + size.Width - other.info.size.Width), position.X);
 
-            return new Point(xPositionInBounds, position.Y - (below ? -size.Height : other.size.Height));
+            return new Point(xPositionInBounds, position.Y - (below ? -size.Height : other.info.size.Height));
         }
 
         public Platform GetPlatform()

@@ -16,11 +16,17 @@ namespace RisingJoker.PlatformFactory
             Listeners = new List<IPointsListener>();
         }
 
+        public PlatformBottom(GameObjectInfo info, Point position, int contactPenalty) : base(info, position, true)
+        {
+            Points = contactPenalty;
+            Listeners = new List<IPointsListener>();
+        }
+
         public override void OnCollisionWith(IGameObject other)
         {
             if (other is Player player)
             {
-                Notify(player.color.ToString());
+                Notify(player.info.color.ToString());
             }
         }
 

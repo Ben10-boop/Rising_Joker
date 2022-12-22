@@ -34,7 +34,7 @@ namespace RisingJoker.EnemyObject
 
         private int GenerateNewXPosition()
         {
-            return PositionRandomizer.Next(BaseEnemy.ParentXStart, BaseEnemy.ParentXEnd - BaseEnemy.size.Width);
+            return PositionRandomizer.Next(BaseEnemy.ParentXStart, BaseEnemy.ParentXEnd - BaseEnemy.info.size.Width);
         }
 
         public override IEnemy Clone()

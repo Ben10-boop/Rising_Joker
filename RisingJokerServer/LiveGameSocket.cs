@@ -5,7 +5,6 @@ using RisingJokerServer.PlatGenerationStrategy;
 using RisingJokerServer.PlatGenTemplateMethod;
 using RisingJokerServer.PlatormVisitor;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using WebSocketSharp;
@@ -38,7 +37,7 @@ namespace RisingJokerServer
         public static void PrintGenerationTimerResults()
         {
             IIterator iterator;
-            if (useReverseIterator) 
+            if (useReverseIterator)
                 iterator = (generationTimes as IterableList).CreateReverseIterator();
             else
                 iterator = generationTimes.CreateIterator();
@@ -121,7 +120,8 @@ namespace RisingJokerServer
             //level_2
             for (int i = 0; i < 40; i++)
             {
-                int rolledNum = rand.Next(0, 11);
+                //int rolledNum = rand.Next(0, 11);
+                int rolledNum = 7;
                 if (rolledNum < 6) // <- 6
                 {
                     platGenerator = new Lvl2PlatGenerator();

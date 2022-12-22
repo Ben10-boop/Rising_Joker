@@ -17,6 +17,12 @@ namespace RisingJoker.CoinObject
             Listeners = new List<IPointsListener>();
         }
 
+        public Coin(GameObjectInfo info, Point position, int contactPenalty) : base(info, position, true)
+        {
+            Points = contactPenalty;
+            Listeners = new List<IPointsListener>();
+        }
+
         public Coin Clone()
         {
             return (Coin)MemberwiseClone();
@@ -26,7 +32,7 @@ namespace RisingJoker.CoinObject
         {
             if (other is Player player)
             {
-                Notify(player.color.ToString());
+                Notify(player.info.color.ToString());
                 isAlive = false;
             }
         }

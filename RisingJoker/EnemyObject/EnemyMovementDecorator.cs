@@ -20,10 +20,9 @@ namespace RisingJoker.EnemyObject
         public int UpDirectionSpeed { get => BaseEnemy.UpDirectionSpeed; set => BaseEnemy.UpDirectionSpeed = value; }
         public int ParentXEnd { get => BaseEnemy.ParentXEnd; set => BaseEnemy.ParentXEnd = value; }
         public int ParentXStart { get => BaseEnemy.ParentXStart; set => BaseEnemy.ParentXStart = value; }
-        public Size size { get => BaseEnemy.size; set => BaseEnemy.size = value; }
         public Point position { get => BaseEnemy.position; set => BaseEnemy.position = value; }
-        public string objectTag { get => BaseEnemy.objectTag; set => BaseEnemy.objectTag = value; }
         public int Points { get => BaseEnemy.Points; }
+        public IGameObjectInfo info { get => BaseEnemy.info; set => BaseEnemy.info = value; }
 
         public event EventHandler ObjectDestruction
         {

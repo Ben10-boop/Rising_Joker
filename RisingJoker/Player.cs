@@ -53,7 +53,7 @@ namespace RisingJoker
 
         public override void OnCollisionWith(IGameObject other)
         {
-            if (other.objectTag == "platform" && jumpCooldown <= 0)
+            if (other.info.objectTag == "platform" && jumpCooldown <= 0)
             {
                 hasLanded = true;
             }

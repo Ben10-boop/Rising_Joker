@@ -52,10 +52,10 @@ namespace RisingJoker.RenderingAdapters
             var ranNum = new Random().Next();
             CurrentTime += 0.02;
             char[] trimChars = new char[] { '[', ']' };
-            ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.color.Name, PointsCollectorMap[UserPlayer.color].Points);
+            ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.info.color.Name, PointsCollectorMap[UserPlayer.info.color].Points);
             Opponents.ForEach((opponent) =>
             {
-                ScoreBoard.Text += String.Format("\n {0}: {1}", opponent.color.Name, PointsCollectorMap[opponent.color].Points);
+                ScoreBoard.Text += String.Format("\n {0}: {1}", opponent.info.color.Name, PointsCollectorMap[opponent.info.color].Points);
             });
             ScoreBoard.Text += String.Format("\n Time: {0:n}", CurrentTime);
             if (CurrentTime >= NextSpawnTime && PlatformToSpawnData != null)
@@ -110,9 +110,9 @@ namespace RisingJoker.RenderingAdapters
             });
             createdPlayers.ForEach((player) =>
             {
-                PointsCollector pointsCollector = new PointsCollector(player.color.ToString());
+                PointsCollector pointsCollector = new PointsCollector(player.info.color.ToString());
                 player.Subscribe(pointsCollector);
-                PointsCollectorMap.Add(player.color, pointsCollector);
+                PointsCollectorMap.Add(player.info.color, pointsCollector);
             });
         }
 
@@ -141,7 +141,7 @@ namespace RisingJoker.RenderingAdapters
                     }
                     catch (Exception e)
                     {
-                        Console.WriteLine(obj.objectTag);
+                        Console.WriteLine(obj.info.objectTag);
                     }
                 }
                 if (!obj.IsObjectAlive())

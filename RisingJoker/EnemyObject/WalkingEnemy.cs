@@ -30,14 +30,14 @@ namespace RisingJoker.EnemyObject
                 case MoveDirection.Left:
                     return Math.Max(BaseEnemy.position.X - 2, BaseEnemy.ParentXStart);
                 default:
-                    return Math.Min(BaseEnemy.position.X + 2, BaseEnemy.ParentXEnd - BaseEnemy.size.Width);
+                    return Math.Min(BaseEnemy.position.X + 2, BaseEnemy.ParentXEnd - BaseEnemy.info.size.Width);
             };
         }
 
         private bool ShouldChangeDirection()
         {
             return (direction == MoveDirection.Left && BaseEnemy.position.X <= BaseEnemy.ParentXStart)
-                || (direction == MoveDirection.Right && BaseEnemy.position.X >= BaseEnemy.ParentXEnd - BaseEnemy.size.Width);
+                || (direction == MoveDirection.Right && BaseEnemy.position.X >= BaseEnemy.ParentXEnd - BaseEnemy.info.size.Width);
         }
 
         private void ChangeDirection()

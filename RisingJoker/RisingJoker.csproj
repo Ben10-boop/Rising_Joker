@@ -71,7 +71,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="BaseGameObjects\GameObject.cs" />
+    <Compile Include="BaseGameObjects\GameObjectInfo.cs" />
     <Compile Include="BaseGameObjects\IGameObject.cs" />
+    <Compile Include="BaseGameObjects\IGameObjectInfo.cs" />
     <Compile Include="BaseGameObjects\IMovableObject.cs" />
     <Compile Include="BaseGameObjects\MovableObject.cs" />
     <Compile Include="CoinObject\Coin.cs" />
@@ -79,6 +81,7 @@
     <Compile Include="DTOs\PlayerPositionDto.cs" />
     <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="EnemyObject\EnemyBuilder.cs" />
+    <Compile Include="GameObjectInfoCreation\GameObjectInfoFactory.cs" />
     <Compile Include="RenderingAdapters\IRenderer.cs" />
     <Compile Include="RenderingAdapters\Menu.cs" />
     <Compile Include="Object\GameObject.cs" />

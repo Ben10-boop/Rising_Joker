@@ -38,6 +38,7 @@
             this.undoColorButton = new System.Windows.Forms.Button();
             this.consoleBoard = new System.Windows.Forms.Label();
             this.startButton = new System.Windows.Forms.Button();
+            this.fps = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // scoreBoard
@@ -56,7 +57,7 @@
             // GameTimer
             // 
             this.GameTimer.Enabled = true;
-            this.GameTimer.Interval = 20;
+            this.GameTimer.Interval = 1;
             this.GameTimer.Tick += new System.EventHandler(this.GameTickEvent);
             // 
             // label1
@@ -159,12 +160,25 @@
             this.startButton.UseVisualStyleBackColor = true;
             this.startButton.Click += new System.EventHandler(this.OnStartClick);
             // 
+            // fps
+            // 
+            this.fps.BackColor = System.Drawing.Color.Transparent;
+            this.fps.Font = new System.Drawing.Font("Consolas", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.fps.Location = new System.Drawing.Point(578, 7);
+            this.fps.Name = "fps";
+            this.fps.Size = new System.Drawing.Size(227, 166);
+            this.fps.TabIndex = 15;
+            this.fps.Tag = "scoreText";
+            this.fps.Text = "FPS: 0\r\nMin: 0\r\nMax: 0\r\nAvg: 0\r\nRAM: 0MB";
+            this.fps.TextAlign = System.Drawing.ContentAlignment.TopRight;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.ClientSize = new System.Drawing.Size(1095, 674);
+            this.Controls.Add(this.fps);
             this.Controls.Add(this.startButton);
             this.Controls.Add(this.consoleBoard);
             this.Controls.Add(this.greenSelectButton);
@@ -195,6 +209,7 @@
         private System.Windows.Forms.Label consoleBoard;
         private System.Windows.Forms.Button startButton;
         private System.Windows.Forms.Button undoColorButton;
+        private System.Windows.Forms.Label fps;
     }
 }
 

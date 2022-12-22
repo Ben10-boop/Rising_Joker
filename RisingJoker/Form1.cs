@@ -6,6 +6,7 @@ using RisingJoker.RenderingAdapters;
 using RisingJoker.Themes;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Windows.Forms;
 using WebSocketSharp;
@@ -64,7 +65,6 @@ namespace RisingJoker
             if (needToStartGame) StartGame();
             screenRenderer.Render();
 
-
             if (GameRunning && !needToStartGame)
             {
                 playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
@@ -73,7 +73,7 @@ namespace RisingJoker
                     PositionX = GameRunner.UserPlayer.position.X,
                     PositionY = GameRunner.UserPlayer.position.Y
                 }));
-                return;
+                ShowFps();
             }
         }
 
@@ -319,6 +319,55 @@ namespace RisingJoker
                     GameRunner.OpponentPositions[1] = playersPositions[1];
                     break;
             }
+        }
+
+        private int lastTick;
+        private int lastFrameRate;
+        private int frameRate;
+        private int minFps = int.MaxValue;
+        private int maxFps;
+        private int totalFps;
+        private int timePassed;
+        private PerformanceCounter performanceCounter = new PerformanceCounter
+        {
+            CategoryName = "Process",
+
+            CounterName = "Working Set",
+
+            InstanceName = Process.GetCurrentProcess().ProcessName
+        };
+        private long kbUsed;
+
+        private Tuple<int, int, int, int, long> CalculateFrameRate()
+        {
+
+            if (System.Environment.TickCount - lastTick >= 1000)
+            {
+                kbUsed = GC.GetTotalMemory(true) / 1024;
+                lastFrameRate = frameRate;
+                totalFps += lastFrameRate;
+                timePassed++;
+
+                if (lastFrameRate > maxFps && timePassed > 1)
+                {
+                    maxFps = lastFrameRate;
+                }
+                if (lastFrameRate < minFps && timePassed > 1)
+                {
+                    minFps = lastFrameRate;
+                }
+                frameRate = 0;
+                lastTick = System.Environment.TickCount;
+            }
+            frameRate++;
+            return Tuple.Create(lastFrameRate, minFps == int.MaxValue ? 0 : minFps, maxFps, timePassed < 2 ? lastFrameRate : totalFps / (timePassed - 1), kbUsed);
+        }
+
+        private void ShowFps()
+        {
+            var fpsVals = CalculateFrameRate();
+
+            fps.Text = $"FPS: {fpsVals.Item1}\r\nMin: {fpsVals.Item2}\r\nMax: {fpsVals.Item3}\r\nAvg: {fpsVals.Item4} \r\nRAM: {fpsVals.Item5}KB";
         }
 
     }

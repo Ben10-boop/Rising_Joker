@@ -1,10 +1,5 @@
 ﻿using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformsBuilder;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace RisingJoker
 {
@@ -17,7 +12,6 @@ namespace RisingJoker
 
     public class PlatformObjPickFacade
     {
-
         public PlatformObjPickFacade()
         {
         }

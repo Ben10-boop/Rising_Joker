@@ -19,6 +19,8 @@ namespace RisingJoker.BaseGameObjects
 
 
         public MovableObject(Size size, Point position, bool isVisible, Color color, string TAG) : base(size, position, isVisible, color, TAG) { }
+        public MovableObject(IGameObjectInfo info, Point position, bool isVisible) : base(info, position, isVisible) { }
+
 
         public virtual void Move()
         {

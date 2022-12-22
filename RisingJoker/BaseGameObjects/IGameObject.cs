@@ -5,9 +5,8 @@ namespace RisingJoker.BaseGameObjects
 {
     public interface IGameObject
     {
-        string objectTag { get; set; }
+        IGameObjectInfo info { get; set; }
         Point position { get; set; }
-        Size size { get; set; }
 
         event EventHandler ObjectDestruction;
 

@@ -16,7 +16,7 @@ namespace RisingJoker.PlayerFactoryMethod
         public override void OnCollisionWith(IGameObject other)
         {
             base.OnCollisionWith(other);
-            if (other.objectTag == "enemy")
+            if (other.info.objectTag == "enemy")
             {
                 TouchingEnemy = true;
             }
@@ -30,7 +30,7 @@ namespace RisingJoker.PlayerFactoryMethod
                 if (currentGameTime >= NextPointGainTime)
                 {
                     NextPointGainTime = currentGameTime + 0.2;
-                    Listeners.ForEach((listener) => listener.Update(Points, color.ToString()));
+                    Listeners.ForEach((listener) => listener.Update(Points, info.color.ToString()));
                 }
             }
         }

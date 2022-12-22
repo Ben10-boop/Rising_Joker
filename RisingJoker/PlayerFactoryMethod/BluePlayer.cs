@@ -18,7 +18,7 @@ namespace RisingJoker.PlayerFactoryMethod
             if (currentGameTime >= NextPointGainTime)
             {
                 NextPointGainTime = currentGameTime + 1;
-                Listeners.ForEach((listener) => listener.Update(Points, color.ToString()));
+                Listeners.ForEach((listener) => listener.Update(Points, info.color.ToString()));
             }
         }
     }

@@ -18,7 +18,7 @@ namespace RisingJoker
 
         public override void OnCollisionWith(IGameObject other)
         {
-            if (!(other is Player) || other.objectTag != "player")
+            if (!(other is Player) || other.info.objectTag != "player")
             {
                 return;
             }
