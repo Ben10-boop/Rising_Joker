@@ -82,6 +82,8 @@
     <Compile Include="DTOs\StringDto.cs" />
     <Compile Include="EnemyObject\EnemyBuilder.cs" />
     <Compile Include="GameObjectInfoCreation\GameObjectInfoFactory.cs" />
+    <Compile Include="Mediator\IMediator.cs" />
+    <Compile Include="Mediator\ObjectReaction.cs" />
     <Compile Include="RenderingAdapters\BasePlayerHandler.cs" />
     <Compile Include="RenderingAdapters\SpectatorPlayerHandler.cs" />
     <Compile Include="RenderingAdapters\IPlayerHandler.cs" />

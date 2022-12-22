@@ -14,7 +14,7 @@ namespace RisingJoker
         private double jumpCooldown = 0;
         private bool isJumping, isMovingLeft, isMovingRight = false;
         private bool hasLanded = true;
-        public int Points { get; private set; }
+        public int Points { get; set; }
         protected List<IPointsListener> Listeners = new List<IPointsListener>();
 
         public Player(Size size, Point position, bool isVisible, Color color, int points) : base(size, position, isVisible, color, TAG)
@@ -53,7 +53,15 @@ namespace RisingJoker
 
         public override void OnCollisionWith(IGameObject other)
         {
-            if (other.info.objectTag == "platform" && jumpCooldown <= 0)
+            if (mediator != null)
+            {
+                mediator.React(this, other);
+            }
+        }
+
+        public void landPlayer()
+        {
+            if (jumpCooldown <= 0)
             {
                 hasLanded = true;
             }

@@ -1,6 +1,7 @@
 ﻿using RisingJoker.BaseGameObjects;
 using RisingJoker.CoinObject;
 using RisingJoker.DTOs;
+using RisingJoker.Mediator;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PlatformsBuilder;
 using RisingJoker.PointsObserver;
@@ -27,6 +28,7 @@ namespace RisingJoker.RenderingAdapters
         public List<Player> Opponents;
         public Player UserPlayer;
         public PlayerPositionDto[] OpponentPositions;
+        private ObjectReaction reactor;
 
         public PlatformDto PlatformToSpawnData;
 
@@ -38,6 +40,7 @@ namespace RisingJoker.RenderingAdapters
             CoinMap = new Dictionary<PlatFactoryType, Coin>();
             EnemyMap = new Dictionary<PlatFactoryType, IEnemy>();
             PointsCollectorMap = new Dictionary<Color, PointsCollector>();
+            reactor = new ObjectReaction(PointsCollectorMap);
             Opponents = new List<Player>();
             OpponentPositions = new PlayerPositionDto[]
         {
@@ -51,8 +54,8 @@ namespace RisingJoker.RenderingAdapters
             var ranNum = new Random().Next();
             CurrentTime += 0.02;
             char[] trimChars = new char[] { '[', ']' };
-            //ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.info.color.Name, PointsCollectorMap[UserPlayer.info.color].Points);
-            ScoreBoard.Text = String.Format("Game objects: \n {0}", GameObjects.Count);
+            ScoreBoard.Text = String.Format("Score: \n {0}: {1}", UserPlayer.info.color.Name, PointsCollectorMap[UserPlayer.info.color].Points);
+            //ScoreBoard.Text = String.Format("Game objects: \n {0}", GameObjects.Count);
 
             Opponents.ForEach((opponent) =>
             {
@@ -105,10 +108,6 @@ namespace RisingJoker.RenderingAdapters
             playerHandler.setNextHandler(new GreenPlayerHandler()).setNextHandler(new BluePlayerHandler()).setNextHandler(new SpectatorPlayerHandler());
             Console.WriteLine(new Size(25, 25).ToString());
             UserPlayer = playerHandler.handle(UserColor, UserPlayer, Opponents);
-            if (UserPlayer != null)
-            {
-                Console.WriteLine(UserPlayer.info.color);
-            }
 
             List<Player> createdPlayers = new List<Player>();
             createdPlayers.Add(UserPlayer);
@@ -124,6 +123,7 @@ namespace RisingJoker.RenderingAdapters
                     return;
                 PointsCollector pointsCollector = new PointsCollector(player.info.color.ToString());
                 player.Subscribe(pointsCollector);
+                player.SetMediator(reactor);
                 PointsCollectorMap.Add(player.info.color, pointsCollector);
             });
         }
@@ -160,7 +160,10 @@ namespace RisingJoker.RenderingAdapters
                 {
                     objectsToRemove.Add(obj);
                 }
-                obj.Render();
+                else
+                {
+                    obj.Render();
+                }
             };
             objectsToRemove.ForEach((o) =>
             {
@@ -204,7 +207,9 @@ namespace RisingJoker.RenderingAdapters
             for (int platformIndex = 0; platformIndex < platformData.PlatformAmount; platformIndex++)
             {
                 IEnemy enemy = platFactory.CreateEnemy(new Size(Math.Max(25 - 5 * platformData.Level, 5), 25), -(int)Math.Log(Math.Pow(platformData.Level, 2)));
+                enemy.SetMediator(reactor);
                 Coin coin = platFactory.CreateCoin(Math.Max(25 - 3 * platformData.Level, 5), (int)Math.Log(100 * Math.Pow(platformData.Level, 2)));
+                coin.SetMediator(reactor);
                 PlatformObjAddFacade facade = new PlatformObjAddFacade(GameObjects, platformBuilder, coin, enemy, platFactory, platformData.Level, platformData.Width, PointsCollectorMap);
                 var xOffset = platformData.NextPlatformOffset * platformIndex;
                 platformBuilder

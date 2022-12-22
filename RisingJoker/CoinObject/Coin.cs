@@ -30,14 +30,13 @@ namespace RisingJoker.CoinObject
 
         public override void OnCollisionWith(IGameObject other)
         {
-            if (other is Player player)
+            if (mediator != null)
             {
-                Notify(player.info.color.ToString());
-                isAlive = false;
+                mediator.React(this, other);
             }
         }
 
-        private void Notify(string id)
+        public void Notify(string id)
         {
             Listeners.ForEach(listener => listener.Update(Points, id));
 

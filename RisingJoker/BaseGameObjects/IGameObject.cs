@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RisingJoker.Mediator;
+using System;
 using System.Drawing;
 
 namespace RisingJoker.BaseGameObjects
@@ -12,6 +13,7 @@ namespace RisingJoker.BaseGameObjects
 
         void ChangeColor(Color color);
         Rectangle GetBounds();
+        void SetMediator(IMediator mediator);
         bool IsCollidingWith(IGameObject other);
         void OnCollisionWith(IGameObject other);
         void Render();

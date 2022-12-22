@@ -1,4 +1,5 @@
 ﻿using RisingJoker.BaseGameObjects;
+using RisingJoker.Mediator;
 using RisingJoker.PlatformFactory;
 using RisingJoker.PointsObserver;
 using System;
@@ -88,6 +89,11 @@ namespace RisingJoker.EnemyObject
         public void Render()
         {
             BaseEnemy.Render();
+        }
+
+        public void SetMediator(IMediator mediator)
+        {
+            BaseEnemy.SetMediator(mediator);
         }
 
         public void Subscribe(IPointsListener listener)

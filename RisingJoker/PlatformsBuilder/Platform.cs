@@ -18,29 +18,10 @@ namespace RisingJoker
 
         public override void OnCollisionWith(IGameObject other)
         {
-            if (!(other is Player) || other.info.objectTag != "player")
+            if (mediator != null)
             {
-                return;
+                mediator.React(this, other);
             }
-
-            Player obj = (Player)other;
-
-            bool isFalling = obj.GetDirectionSpeed(MoveDirection.Down) + obj.GetDirectionSpeed(MoveDirection.Up) > 0;
-            Rectangle objBounds = obj.GetBounds();
-            Rectangle platformBounds = this.GetBounds();
-            if (!isFalling)
-            {
-                this.ChangeColor(Color.BlueViolet);
-                return;
-            }
-            int threshold = 15;
-            bool comingFromTop = objBounds.Bottom >= (platformBounds.Top - 4) && objBounds.Top < platformBounds.Top && objBounds.Bottom - (platformBounds.Top - 4) <= threshold;
-            if (comingFromTop)
-            {
-                this.ChangeColor(Color.Red);
-                obj.MoveBy(new Point(0, platformBounds.Top - objBounds.Bottom - 7));
-            }
-
         }
 
         public override void Move()

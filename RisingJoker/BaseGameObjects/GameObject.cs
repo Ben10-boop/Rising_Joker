@@ -1,4 +1,5 @@
-﻿using System;
+﻿using RisingJoker.Mediator;
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 
@@ -9,6 +10,7 @@ namespace RisingJoker.BaseGameObjects
         protected virtual PictureBox objectDisplay { get; set; }
         public virtual event EventHandler ObjectDestruction;
         public static Form gameScreen;
+        protected IMediator mediator;
         public virtual IGameObjectInfo info { get; set; }
         protected virtual bool isVisible { get; set; }
         public virtual Point position { get; set; }
@@ -29,6 +31,11 @@ namespace RisingJoker.BaseGameObjects
 
             this.isVisible = isVisible;
             isAlive = true;
+        }
+
+        public void SetMediator(IMediator med)
+        {
+            mediator = med;
         }
 
         public virtual void OnCollisionWith(IGameObject other)
