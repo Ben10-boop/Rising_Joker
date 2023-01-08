@@ -42,7 +42,7 @@
             // scoreBoard
             // 
             this.scoreBoard.Font = new System.Drawing.Font("Consolas", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.scoreBoard.Location = new System.Drawing.Point(414, 7);
+            this.scoreBoard.Location = new System.Drawing.Point(856, 9);
             this.scoreBoard.Name = "scoreBoard";
             this.scoreBoard.Size = new System.Drawing.Size(227, 65);
             this.scoreBoard.TabIndex = 0;
@@ -116,9 +116,9 @@
             // consoleBoard
             // 
             this.consoleBoard.Font = new System.Drawing.Font("Consolas", 11F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.consoleBoard.Location = new System.Drawing.Point(247, 490);
+            this.consoleBoard.Location = new System.Drawing.Point(770, 490);
             this.consoleBoard.Name = "consoleBoard";
-            this.consoleBoard.Size = new System.Drawing.Size(836, 175);
+            this.consoleBoard.Size = new System.Drawing.Size(313, 175);
             this.consoleBoard.TabIndex = 12;
             this.consoleBoard.Tag = "menuText";
             this.consoleBoard.Text = "Time: 0";

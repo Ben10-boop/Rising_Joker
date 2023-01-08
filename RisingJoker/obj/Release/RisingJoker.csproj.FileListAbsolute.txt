@@ -1,0 +1,16 @@
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\Themes\PlatformThemes.json
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\RisingJoker.exe.config
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\RisingJoker.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\RisingJoker.pdb
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\Newtonsoft.Json.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\websocket-sharp.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\bin\Release\Newtonsoft.Json.xml
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.csproj.AssemblyReference.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.csproj.SuggestedBindingRedirects.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.Form1.resources
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.Properties.Resources.resources
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.csproj.GenerateResource.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.csproj.CoreCompileInputs.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.csproj.CopyComplete
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJoker\obj\Release\RisingJoker.pdb

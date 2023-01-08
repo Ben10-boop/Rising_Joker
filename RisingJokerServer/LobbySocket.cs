@@ -19,7 +19,7 @@ namespace RisingJokerServer
                 PlayerColor color = (PlayerColor)Enum.Parse(typeof(PlayerColor), receivedPlayerColor);
 
                 JoinManager.GetInstance().JoinAs(color);
-                Send($"Joined as {color}");
+                Send($"Joined as '{color}'");
             }
             catch (Exception)
             {

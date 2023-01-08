@@ -28,8 +28,6 @@ namespace RisingJoker
             lobbySocket.Connect();
         }
 
-        bool addedOnce = false;
-
         bool needToStartGame, GameRunning, isWaitingForResponse;
         int score;
 
@@ -37,6 +35,7 @@ namespace RisingJoker
         static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
+        Color selectedColor;
 
         //for spawning platforms
         double currentTime = 0;
@@ -47,7 +46,7 @@ namespace RisingJoker
         //data objects that are received from server
         Stack<string> MenuMessages = new Stack<string>();
         PlatformDto platformToSpawnData;
-        List<GameObject> gameObjects = new List<GameObject>();
+        List<GameObject> GameObjects = new List<GameObject>();
 
         /*
         Game timer event that happens every game frame. Everything that influences what is seen on
@@ -100,15 +99,10 @@ namespace RisingJoker
                 platformToSpawnData = null;
             }
 
-            gameObjects.ForEach(obj =>
+            GameObjects.ForEach(obj =>
             {
-                MovableObject movableObject = obj is MovableObject @object ? @object : null;
-                if (movableObject != null)
-                {
-                    movableObject.Move();
-                }
-
-                gameObjects.ForEach(otherObj =>
+                obj.Move();
+                GameObjects.ForEach(otherObj =>
                 {
                     if (otherObj == obj)
                     {
@@ -121,10 +115,7 @@ namespace RisingJoker
                     }
                 });
 
-                if (movableObject != null)
-                {
-                    movableObject.MoveDisplayObject();
-                }
+                obj.MoveObjectInDisplay();
             });
         }
 
@@ -259,7 +250,7 @@ namespace RisingJoker
             {
                 userPlayer.SetMovement(MoveDirection.Right, isMoving);
             }
-            if (e.KeyCode == Keys.Space)
+            if (e.KeyCode == Keys.Up)
             {
                 userPlayer.SetMovement(MoveDirection.Up, isMoving);
             }
@@ -272,6 +263,11 @@ namespace RisingJoker
         {
             MenuMessages.Push("Server: " + e.Data);
             isWaitingForResponse = false;
+            if (e.Data.StartsWith("Joined as"))
+            {
+                string color = e.Data.Split('\'')[1];
+                SetPlayerColor(color);
+            }
         }
         //Message from RunGame service
         private void RunWs_OnMessage(object sender, MessageEventArgs e)
@@ -289,10 +285,20 @@ namespace RisingJoker
             }
         }
 
+        private void SetPlayerColor(string playerColor)
+        {
+            if (playerColor == "Blue")
+                selectedColor = Color.Blue;
+            if (playerColor == "Red")
+                selectedColor = Color.Red;
+            if (playerColor == "Green")
+                selectedColor = Color.Green;
+        }
+
         private void SpawnPlayer()
         {
-            userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
-            gameObjects.Add(userPlayer);
+            userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, selectedColor);
+            GameObjects.Add(userPlayer);
             userPlayer.Render();
         }
 
@@ -300,27 +306,11 @@ namespace RisingJoker
 
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
-            PlatformBuilder platformBuilder =
-                new PlatformBuilder()
-                .SetDirectionSpeed(MoveDirection.Down, FALL_SPEED)
-                .SetSize(new Size(platformData.Width, platformData.Height))
-                .SetPosition(new Point(platformData.PositionX, yPosition))
-                .SetColor(Color.Brown);
-            if (platformData.HasCoin && !addedOnce)
+            Platform platform = new Platform(new Size(platformData.Width, platformData.Height), new Point(platformData.PositionX, yPosition), Color.Brown)
             {
-                Coin coin = CoinFactory.CreateCoin(platformData.CoinPosX);
-                gameObjects.Add(coin);
-                platformBuilder.AddCoin(coin, consoleBoard);
-            }
-            if (platformData.HasEnemy && !addedOnce)
-            {
-                Enemy enemy = EnemyFactory.CreateEnemy(platformData.EnemyPosX);
-                gameObjects.Add(enemy);
-                platformBuilder.AddEnemy(enemy, consoleBoard);
-            }
-
-            Platform platform = platformBuilder.GetPlatform();
-            gameObjects.Add(platform);
+                DownDirectionSpeed = FALL_SPEED
+            };
+            GameObjects.Add(platform);
             platform.Render();
         }
 

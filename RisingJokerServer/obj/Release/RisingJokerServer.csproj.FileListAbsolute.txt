@@ -1,0 +1,12 @@
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\RisingJokerServer.exe.config
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\RisingJokerServer.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\RisingJokerServer.pdb
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\Newtonsoft.Json.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\websocket-sharp.dll
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Release\Newtonsoft.Json.xml
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.csproj.AssemblyReference.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.csproj.SuggestedBindingRedirects.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.csproj.CoreCompileInputs.cache
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.csproj.CopyComplete
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.exe
+C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Release\RisingJokerServer.pdb

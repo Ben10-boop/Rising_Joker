@@ -2,7 +2,7 @@
 
 namespace RisingJoker
 {
-    public class Player : MovableObject
+    public class Player : GameObject
     {
         public static string TAG = "player";
         const int HORIZONTAL_SPEED = 7;
@@ -106,9 +106,8 @@ namespace RisingJoker
             if (jumpCooldown > 0)
             {
                 jumpCooldown -= 2.0 / 20;
-                ChangeColor(Color.IndianRed);
             }
-            if (jumpCooldown < 0)
+            if (jumpCooldown <= 0)
             {
                 jumpCooldown = 0;
             }
@@ -122,7 +121,6 @@ namespace RisingJoker
             }
             if (jumpCooldown <= 0 && UpDirectionSpeed > -10 && isJumping && hasLanded)
             {
-                ChangeColor(Color.Brown);
                 jumpCooldown = 2.0;
                 UpDirectionSpeed = JUMP_SPEED;
                 hasLanded = false;
