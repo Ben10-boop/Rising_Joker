@@ -34,3 +34,15 @@ C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Debug\New
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Debug\websocket-sharp.dll
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\bin\Debug\Newtonsoft.Json.xml
 C:\Users\DC\Source\Repos\Ben10-boop\Rising_Joker\RisingJokerServer\obj\Debug\RisingJokerServer.csproj.CopyComplete
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\RisingJokerServer.exe.config
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\RisingJokerServer.exe
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\RisingJokerServer.pdb
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\Newtonsoft.Json.dll
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\websocket-sharp.dll
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\bin\Debug\Newtonsoft.Json.xml
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.csproj.AssemblyReference.cache
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.csproj.SuggestedBindingRedirects.cache
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.csproj.CoreCompileInputs.cache
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.csproj.CopyComplete
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.exe
+C:\Users\Benas B\Desktop\Prototype\RisingJokerServer\obj\Debug\RisingJokerServer.pdb

@@ -13,6 +13,7 @@ namespace RisingJoker
         Red = 0,
         Green = 1,
         Blue = 2,
+        None = 3
     }
 
     public partial class Form1 : Form
@@ -26,22 +27,34 @@ namespace RisingJoker
 
             lobbySocket.OnMessage += Ws_OnMessage;
             lobbySocket.Connect();
+
+            playerPosBroadcastSocket.OnMessage += PlayerPosBroadcastWs_OnMessage;
+            playerPosBroadcastSocket.Connect();
         }
 
         bool needToStartGame, GameRunning, isWaitingForResponse;
         int score;
 
         //server stuff
+        //static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
         static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
-        Color selectedColor;
+        readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
 
         //for spawning platforms
         double currentTime = 0;
         double nextSpawnTime = 1;
 
+        //player information
         Player userPlayer;
+        Color selectedColor;
+        PlayerColor selectedColorEnum;
+        List<Player> Opponents = new List<Player>();
+        PlayerPositionDto[] OpponentPositions = new PlayerPositionDto[]{
+            new PlayerPositionDto { PositionX = 0, PositionY = 50, PlayerColor = PlayerColor.None.ToString() },
+            new PlayerPositionDto { PositionX = 0, PositionY = 50, PlayerColor = PlayerColor.None.ToString() }
+        };
 
         //data objects that are received from server
         Stack<string> MenuMessages = new Stack<string>();
@@ -56,6 +69,16 @@ namespace RisingJoker
         {
             if (GameRunning)
             {
+                if (!needToStartGame)
+                {
+                    playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
+                    {
+                        PlayerColor = selectedColorEnum.ToString(),
+                        PositionX = userPlayer.position.X,
+                        PositionY = userPlayer.position.Y
+                    }));
+                    return;
+                }
                 RunGame();
                 return;
             }
@@ -73,7 +96,7 @@ namespace RisingJoker
                 menuBoardText = menuBoardText + "\n" + message;
                 i++;
             }
-            //consoleBoard.Text = menuBoardText;
+            consoleBoard.Text = menuBoardText;
 
             foreach (Control x in this.Controls)
             {
@@ -131,8 +154,7 @@ namespace RisingJoker
                     x.Visible = true;
                     x.SendToBack();
                 }
-                //else if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
-                else if ((string)x.Tag == "menuButton")
+                else if ((string)x.Tag == "menuText" || (string)x.Tag == "menuButton")
                 {
                     x.Visible = false;
                     x.Enabled = false;
@@ -258,6 +280,7 @@ namespace RisingJoker
 
 
         //Methods that are executed when a message is received from the server
+
         //Message from JoinGame service
         private void Ws_OnMessage(object sender, MessageEventArgs e)
         {
@@ -284,26 +307,80 @@ namespace RisingJoker
                 needToStartGame = true;
             }
         }
+        //Message from PlayerPositionBroadcast service
+        private void PlayerPosBroadcastWs_OnMessage(object sender, MessageEventArgs e)
+        {
+            PlayerPositionDto[] playersPositions = JsonConvert.DeserializeObject<PlayerPositionDto[]>(e.Data);
+            switch (selectedColorEnum)
+            {
+                case PlayerColor.Red:
+                    OpponentPositions[0] = playersPositions[1];
+                    OpponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Green:
+                    OpponentPositions[0] = playersPositions[0];
+                    OpponentPositions[1] = playersPositions[2];
+                    break;
+                case PlayerColor.Blue:
+                    OpponentPositions[0] = playersPositions[0];
+                    OpponentPositions[1] = playersPositions[1];
+                    break;
+            }
+        }
 
         private void SetPlayerColor(string playerColor)
         {
             if (playerColor == "Blue")
+            {
                 selectedColor = Color.Blue;
+                selectedColorEnum = PlayerColor.Blue;
+            }
             if (playerColor == "Red")
+            {
                 selectedColor = Color.Red;
+                selectedColorEnum = PlayerColor.Red;
+            }
             if (playerColor == "Green")
+            {
                 selectedColor = Color.Green;
+                selectedColorEnum = PlayerColor.Green;
+            }
         }
 
         private void SpawnPlayer()
         {
-            userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, selectedColor);
+            switch (selectedColorEnum)
+            {
+                case PlayerColor.Red:
+                    userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Red);
+
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Green));
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue));
+                    break;
+                case PlayerColor.Blue:
+                    userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue);
+
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Red));
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Green));
+                    break;
+                case PlayerColor.Green:
+                    userPlayer = new Player(new Size(25, 25), new Point(0, 0), true, Color.Green);
+
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Red));
+                    Opponents.Add(new Player(new Size(25, 25), new Point(0, 0), true, Color.Blue));
+                    break;
+            }
             GameObjects.Add(userPlayer);
             userPlayer.Render();
+
+            Opponents.ForEach((opponent) =>
+            {
+                GameObjects.Add(opponent);
+                opponent.Render();
+            });
         }
 
         //Method that spawns a platform with specified parameters (received from server)
-
         private void SpawnPlatform(PlatformDto platformData, int yPosition)
         {
             Platform platform = new Platform(new Size(platformData.Width, platformData.Height), new Point(platformData.PositionX, yPosition), Color.Brown)
