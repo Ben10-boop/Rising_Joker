@@ -36,8 +36,8 @@ namespace RisingJoker
         int score;
 
         //server stuff
-        //static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
-        static readonly string serverAddress = "ws://127.0.0.1:6969";
+        static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
+        //static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
         readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
@@ -48,8 +48,12 @@ namespace RisingJoker
 
         //player information
         Player userPlayer;
-        Color selectedColor;
         PlayerColor selectedColorEnum;
+
+        /*
+        Opponent object and position lists are synchronized by index, 
+        thus saving the color in position object is not needed.
+         */
         List<Player> Opponents = new List<Player>();
         PlayerPositionDto[] OpponentPositions = new PlayerPositionDto[]{
             new PlayerPositionDto { PositionX = 0, PositionY = 50, PlayerColor = PlayerColor.None.ToString() },
@@ -69,16 +73,12 @@ namespace RisingJoker
         {
             if (GameRunning)
             {
-                if (!needToStartGame)
+                playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
                 {
-                    playerPosBroadcastSocket.Send(JsonConvert.SerializeObject(new PlayerPositionDto
-                    {
-                        PlayerColor = selectedColorEnum.ToString(),
-                        PositionX = userPlayer.position.X,
-                        PositionY = userPlayer.position.Y
-                    }));
-                    return;
-                }
+                    PlayerColor = selectedColorEnum.ToString(),
+                    PositionX = userPlayer.position.X,
+                    PositionY = userPlayer.position.Y
+                }));
                 RunGame();
                 return;
             }
@@ -122,6 +122,7 @@ namespace RisingJoker
                 platformToSpawnData = null;
             }
 
+            UpdateOpponentsPositions();
             GameObjects.ForEach(obj =>
             {
                 obj.Move();
@@ -210,6 +211,13 @@ namespace RisingJoker
 
 
             GameRunning = true;
+        }
+        private void UpdateOpponentsPositions()
+        {
+            for (int i = 0; i < Opponents.Count; i++)
+            {
+                Opponents[i].MoveTo(new Point(OpponentPositions[i].PositionX, OpponentPositions[i].PositionY));
+            }
         }
 
         //Button clicking events (what happens when a certain button is clicked)
@@ -332,21 +340,22 @@ namespace RisingJoker
         {
             if (playerColor == "Blue")
             {
-                selectedColor = Color.Blue;
                 selectedColorEnum = PlayerColor.Blue;
             }
             if (playerColor == "Red")
             {
-                selectedColor = Color.Red;
                 selectedColorEnum = PlayerColor.Red;
             }
             if (playerColor == "Green")
             {
-                selectedColor = Color.Green;
                 selectedColorEnum = PlayerColor.Green;
             }
         }
 
+        /*
+        Spawns the player and the opponents. The order in which opponents get added is relevant,
+        this way, the position indexes match the opponent object indexes
+        */
         private void SpawnPlayer()
         {
             switch (selectedColorEnum)
