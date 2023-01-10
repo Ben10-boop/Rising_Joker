@@ -21,7 +21,7 @@ namespace RisingJokerServer
             {
                 Send("Game has already started!");
             }
-            else if (JoinManager.GetInstance().GetPlayersJoined() < 1)
+            else if (JoinManager.GetPlayersJoined() < 1)
             {
                 Send("Not enough players have joined yet");
             }

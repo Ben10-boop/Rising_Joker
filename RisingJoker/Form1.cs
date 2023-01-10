@@ -32,12 +32,13 @@ namespace RisingJoker
             playerPosBroadcastSocket.Connect();
         }
 
+        //general game parameters
         bool needToStartGame, GameRunning, isWaitingForResponse;
         int score;
 
         //server stuff
-        static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
-        //static readonly string serverAddress = "ws://127.0.0.1:6969";
+        //static readonly string serverAddress = "ws://25.44.67.63:6969"; // <- This for multiplayer
+        static readonly string serverAddress = "ws://127.0.0.1:6969";
         readonly WebSocket runSocket = new WebSocket(serverAddress + "/RunGame");
         readonly WebSocket lobbySocket = new WebSocket(serverAddress + "/JoinGame");
         readonly WebSocket playerPosBroadcastSocket = new WebSocket(serverAddress + "/PlayerPosBroadcast");
@@ -49,7 +50,6 @@ namespace RisingJoker
         //player information
         Player userPlayer;
         PlayerColor selectedColorEnum;
-
         /*
         Opponent object and position lists are synchronized by index, 
         thus saving the color in position object is not needed.
@@ -235,7 +235,6 @@ namespace RisingJoker
         {
             OnColorSelectClick(PlayerColor.Blue);
         }
-
         private void OnColorSelectClick(PlayerColor color)
         {
             if (isWaitingForResponse)
@@ -248,8 +247,6 @@ namespace RisingJoker
             lobbySocket.Send(color.ToString());
             isWaitingForResponse = true;
         }
-
-
         private void OnStartClick(object sender, EventArgs e)
         {
             if (isWaitingForResponse)
@@ -297,6 +294,7 @@ namespace RisingJoker
             if (e.Data.StartsWith("Joined as"))
             {
                 string color = e.Data.Split('\'')[1];
+                MenuMessages.Push("Yes, here: " + color);
                 SetPlayerColor(color);
             }
         }

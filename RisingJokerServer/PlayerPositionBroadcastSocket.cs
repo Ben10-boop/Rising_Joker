@@ -10,8 +10,10 @@ using WebSocketSharp.Server;
 
 namespace RisingJokerServer
 {
+    //Handles the multiplayer side of the game (telling everyone where opponents are located)
     internal class PlayerPositionBroadcastSocket : WebSocketBehavior
     {
+        //Need 3 computers to fully test out so green is ignored so that only two computers would be required
         static PlayerPositionDto BluePos;
         static PlayerPositionDto RedPos;
         PlayerPositionDto GreenPos = new PlayerPositionDto { PositionX = 0, PositionY = 0, PlayerColor = PlayerColor.Green.ToString() };

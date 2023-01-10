@@ -1,54 +1,38 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 public enum PlayerColor
 {
     Red = 0,
     Green = 1,
     Blue = 2,
+    None = 3
 }
 
 namespace RisingJokerServer
 {
-    public class JoinManager //Pattern: Singleton
+    //stores the data of what players have already joined
+    public static class JoinManager
     {
-        private static JoinManager instance = null;
-        private readonly Dictionary<PlayerColor, bool> colorsJoined = new Dictionary<PlayerColor, bool>();
+        private static Dictionary<PlayerColor, bool> colorsJoined = new Dictionary<PlayerColor, bool>();
 
-        private static object threadLockInitialize = new object();
-        private object joinThreadLock = new object();
-
-        private JoinManager()
+        /*
+        Attempt to join as the color specified in the argument. If joining succeeds, method will
+        return true and if joining fails, the method will return false.
+         */
+        public static bool TryJoinAs(PlayerColor color)
         {
-            Console.WriteLine("-JoinGame- JoinManager initialised");
+            if (colorsJoined.ContainsKey(color))
+                return false;
+
+            colorsJoined[color] = true;
+            return true;
         }
 
-        public static JoinManager GetInstance()
+        public static int GetPlayersJoined()
         {
-            lock (threadLockInitialize)
-            {
-                if (instance == null)
-                {
-                    instance = new JoinManager();
-                }
-            }
-            return instance;
-        }
-
-        public void JoinAs(PlayerColor color)
-        {
-            lock (joinThreadLock)
-            {
-                if (colorsJoined.ContainsKey(color))
-                    return;
-
-                colorsJoined[color] = true;
-            }
-        }
-
-        public int GetPlayersJoined()
-        {
-            return colorsJoined.Count;
+            return colorsJoined.Where(item => item.Key != PlayerColor.None && item.Value).Count();
         }
     }
 }
